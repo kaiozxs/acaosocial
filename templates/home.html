@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=Arvo:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
   <link rel="icon" href="{% static 'img/favicon.png' %}">
-  <link rel="stylesheet" href="{% static 'css/site.css' %}?v=6">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}?v=7">
 </head>
 <body>
 
@@ -46,7 +46,7 @@
   <div class="faixa-div" aria-hidden="true"><span class="ponta"><i></i><i></i><i></i><i></i></span></div>
 
   {% if messages %}
-  <div class="avisos">{% for m in messages %}<p class="{{ m.tags }}">{{ m }}</p>{% endfor %}</div>
+  <div class="avisos" role="status" aria-live="polite">{% for m in messages %}<div class="aviso {{ m.tags }}"><strong>{% if m.tags == 'success' %}Ficha enviada{% else %}Atenção{% endif %}</strong><span>{{ m }}</span><button type="button" aria-label="Fechar">×</button></div>{% endfor %}</div>
   {% endif %}
 
   <!-- PROJETO: três patches de kimono -->
@@ -217,6 +217,9 @@ document.getElementById('prox').onclick=function(){ir(atual+1);};
 mn.forEach(function(m,k){m.onclick=function(){ir(k);};});
 f.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();ir(atual+1);}if(e.key==='ArrowLeft'){e.preventDefault();ir(atual-1);}});
 marca(0);})();
+</script>
+<script>
+document.querySelectorAll('.aviso').forEach(function(a){var f=function(){a.classList.add('saindo');setTimeout(function(){a.remove();},400);};a.querySelector('button').onclick=f;setTimeout(f,7000);});
 </script>
 </body>
 </html>

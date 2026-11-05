@@ -111,9 +111,6 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 2.6rem); margin-bottom: 1rem; }
 .ficha button { margin-top: .6rem; padding: .95rem 2rem; background: var(--preto); color: var(--papel); border: 0; cursor: pointer; font: 400 1rem "Archivo Black", sans-serif; text-transform: uppercase; letter-spacing: .06em; transition: .15s; }
 .ficha button:hover { background: var(--vermelho); }
 
-.avisos p { margin: 0; padding: .9rem clamp(1rem, 4vw, 3rem); font-weight: 600; }
-.avisos .success { background: #12301b; color: #b7f0c8; }
-.avisos .error { background: #3a0b12; color: #ffb3bf; }
 
 footer { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem clamp(1rem, 4vw, 3rem); border-top: 3px solid var(--vermelho); color: var(--suave); font-size: .85rem; }
 footer b { font: 400 1.6rem "Archivo Black", sans-serif; color: var(--vermelho); }
@@ -208,3 +205,14 @@ footer a:hover { color: #fff; }
 .mini:hover { opacity: .85; } .mini.ativa { opacity: 1; box-shadow: 0 0 0 2px #f1ece0; }
 .mini:focus-visible, .seta:focus-visible, .folhas:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .folhas { scroll-behavior: auto; } }
+
+/* ---------- aviso (toast) ao enviar a ficha ---------- */
+.avisos { position: fixed; z-index: 100; top: 70px; right: 16px; left: 16px; display: grid; gap: 10px; justify-items: end; pointer-events: none; }
+.aviso { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; align-items: start; width: min(380px, 100%); padding: 14px 16px 14px 18px; background: #f1ece0; color: var(--tinta); border-left: 8px solid #1f7a3a; box-shadow: 0 14px 34px rgba(0,0,0,.65); animation: aviso-entra .5s cubic-bezier(.2,1.2,.4,1) both; }
+.aviso.error { border-left-color: var(--vermelho); }
+.aviso strong { font: 1rem "Archivo Black", sans-serif; text-transform: uppercase; }
+.aviso span { grid-column: 1; font-size: .98rem; line-height: 1.45; }
+.aviso button { grid-column: 2; grid-row: 1 / span 2; border: 0; background: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--tinta); }
+.aviso.saindo { transition: opacity .35s, transform .35s; opacity: 0; transform: translateX(30px); }
+@keyframes aviso-entra { from { opacity: 0; transform: translateX(40px); } }
+@media (prefers-reduced-motion: reduce) { .aviso { animation: none; } }
