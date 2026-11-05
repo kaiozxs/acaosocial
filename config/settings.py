@@ -100,3 +100,5 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
 AUTHENTICATION_BACKENDS = ["core.auth.UsuarioEmCache"]
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "painel"}}
+
+X_FRAME_OPTIONS = "SAMEORIGIN"  # permite abrir os formulários em caixinha (iframe do próprio site)

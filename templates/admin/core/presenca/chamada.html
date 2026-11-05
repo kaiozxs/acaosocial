@@ -1,28 +1,73 @@
 {% extends "admin/base_site.html" %}
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Início</a> › <a href="{% url 'admin:core_presenca_changelist' %}">Presenças</a> › Chamada rápida</div>{% endblock %}
+{% load painel_extras %}
+{% block content_title %}<h1>Chamada</h1>{% endblock %}
 {% block content %}
-<form method="get" class="chamada-filtro">
-  <label>Turma
-    <select name="turma" onchange="this.form.submit()">
-      <option value="">Todas</option>
-      {% for t in turmas %}<option value="{{ t.pk }}" {% if t.pk|stringformat:"s" == turma_id %}selected{% endif %}>{{ t.nome }} — {{ t.horario }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Dia <input type="date" name="data" value="{{ dia }}" onchange="this.form.submit()"></label>
-</form>
-<form method="post" class="chamada">
+{% if passo == 1 %}
+<p class="ajuda-caixa">Escolha a turma para fazer a chamada de hoje.</p>
+<div class="turmas-grade">
+  {% for t in turmas %}
+  <a class="turma-cartao" href="?turma={{ t.pk }}">
+    <span class="modalidade {{ t.modalidade }}">{{ t.get_modalidade_display }}</span>
+    <strong>{{ t.nome }}</strong>
+    <small>{{ t.dias }} · {{ t.horario }}</small>
+    <em>{{ t.n }} aluno{{ t.n|pluralize }}</em>
+  </a>
+  {% empty %}
+  <div class="estado-vazio"><strong>Nenhuma turma cadastrada</strong><p>Cadastre uma turma para poder fazer a chamada.</p></div>
+  {% endfor %}
+  <a class="turma-cartao todos" href="?turma=todos"><span class="modalidade">Geral</span><strong>Todos os alunos</strong><small>Sem separar por turma</small><em>{{ total }} aluno{{ total|pluralize }}</em></a>
+</div>
+{% else %}
+<a class="voltar" href="{% url 'admin:core_presenca_chamada' %}">‹ Escolher outra turma</a>
+<div class="chamada-topo">
+  <div>
+    <h2>{% if turma %}{{ turma.nome }}{% else %}Todos os alunos{% endif %}</h2>
+    {% if turma %}<span class="modalidade {{ turma.modalidade }}">{{ turma.get_modalidade_display }}</span> <small class="muted">{{ turma.dias }} · {{ turma.horario }}</small>{% endif %}
+  </div>
+  <form method="get" class="dia-escolha">
+    <input type="hidden" name="turma" value="{{ param }}">
+    <a class="dia-seta" href="?turma={{ param }}&data={{ dia_ant }}" aria-label="Dia anterior">‹</a>
+    <input type="date" name="data" value="{{ dia_iso }}" onchange="this.form.submit()" aria-label="Data da chamada">
+    <a class="dia-seta" href="?turma={{ param }}&data={{ dia_prox }}" aria-label="Próximo dia">›</a>
+  </form>
+</div>
+{% if ja_salva %}<p class="aviso-salvo">Esta chamada já foi salva. Dá para corrigir e salvar de novo.</p>{% endif %}
+<form method="post" class="chamada-form" id="chamada-form">
   {% csrf_token %}
-  <input type="hidden" name="turma" value="{{ turma_id }}"><input type="hidden" name="data" value="{{ dia }}">
-  {% if alunos %}
-  <p class="chamada-topo"><button type="button" class="chamada-todos" onclick="document.querySelectorAll('.chamada input[name=aluno]').forEach(function(c){c.checked=true})">Marcar todos</button></p>
-  <ul class="chamada-lista">
-    {% for a in alunos %}
-    <li><label><input type="checkbox" name="aluno" value="{{ a.pk }}" {% if a.pk in presentes %}checked{% endif %}><span>{{ a.nome }}</span><small>{{ a.get_faixa_display }}</small></label></li>
+  <input type="hidden" name="turma" value="{{ param }}"><input type="hidden" name="data" value="{{ dia_iso }}">
+  <div class="chamada-acoes">
+    <button type="button" class="btn" id="todos-sim">Todos presentes</button>
+    <button type="button" class="btn" id="todos-nao">Ninguém veio</button>
+    <span class="chamada-regra">Frequência em {{ mes }}: {{ aulas }} aula{{ aulas|pluralize }} registrada{{ aulas|pluralize }}</span>
+  </div>
+  <ul class="chamada-lista2">
+    {% for l in linhas %}
+    <li>
+      <label class="aluno-linha">
+        <span class="aluno-info">
+          <strong>{{ l.aluno.nome }}</strong>
+          <span class="aluno-meta">
+            {% if l.aluno.turma %}<span class="modalidade {{ l.aluno.turma.modalidade }}">{{ l.aluno.turma.get_modalidade_display }}</span>{% endif %}
+            <span class="faixa-chip"><span class="cinto {% if l.aluno.faixa == 'preta' %}preta{% endif %}" style="--cor: {{ l.aluno.faixa|cor_faixa }}"><i class="cinto-barra">{{ l.aluno.grau|listras }}</i></span><em>{{ l.aluno.get_faixa_display }}</em></span>
+          </span>
+          <span class="freq">
+            {% if l.pct is None %}<small class="muted">Sem aulas registradas em {{ mes }}</small>
+            {% else %}<span class="freq-barra"><i style="width: {{ l.pct }}%"></i></span><small>{{ l.n }} de {{ aulas }} aula{{ aulas|pluralize }} · {{ l.pct }}%</small>{% endif %}
+          </span>
+        </span>
+        <span class="chave"><input type="checkbox" name="aluno" value="{{ l.aluno.pk }}" {% if l.presente %}checked{% endif %}><i></i></span>
+      </label>
+    </li>
+    {% empty %}
+    <li class="estado-vazio"><strong>Nenhum aluno nesta turma</strong><p>Cadastre alunos e escolha esta turma para eles aparecerem aqui.</p></li>
     {% endfor %}
   </ul>
-  <input type="submit" name="salvar" value="Salvar chamada" class="default">
-  {% else %}
-  <p>Nenhum aluno ativo nesta turma. Cadastre alunos em <a href="{% url 'admin:core_aluno_changelist' %}">Alunos</a>.</p>
+  {% if linhas %}
+  <div class="chamada-rodape">
+    <span id="contagem">0 presentes</span>
+    <button type="submit" name="salvar" value="1" class="btn-principal">Salvar chamada</button>
+  </div>
   {% endif %}
 </form>
+{% endif %}
 {% endblock %}

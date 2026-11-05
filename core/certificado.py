@@ -31,7 +31,8 @@ _FONTES = settings.BASE_DIR / "static" / "fonts"
 try:
     pdfmetrics.registerFont(TTFont("Cursiva", str(_FONTES / "GreatVibes-Regular.ttf")))
     pdfmetrics.registerFont(TTFont("Titulo", str(_FONTES / "Cinzel-Variable.ttf")))
-    F_NOME, F_TITULO = "Cursiva", "Titulo"
+    pdfmetrics.registerFont(TTFont("Nome", str(_FONTES / "PlayfairDisplay-Italic.ttf")))
+    F_NOME, F_TITULO = "Nome", "Titulo"
 except Exception:  # sem as fontes, cai para as padrão do PDF
     F_NOME, F_TITULO = "Times-BoldItalic", "Times-Bold"
 
@@ -90,24 +91,12 @@ def _moldura(c, W, H):
         c.circle(cx, cy, 3, fill=1, stroke=0)
 
 
-def _faixa(c, cx, y, chave, grau, largura=340, altura=28):
-    x = cx - largura / 2
-    c.setFillColor(HexColor(COR_FAIXA.get(chave, "#444")))
-    c.setStrokeColor(HexColor("#55575f")); c.setLineWidth(.9)
-    c.rect(x, y, largura, altura, fill=1, stroke=1)
-    # costuras
-    c.setStrokeColor(HexColor("#00000033") if chave != "branca" else HexColor("#c9c9c9")); c.setLineWidth(.5)
-    for dy in (6, altura - 6):
-        c.line(x + 4, y + dy, x + largura - 4, y + dy)
-    # barra dos graus
-    bw = 78
-    bx = x + largura - bw - 40
-    c.setFillColor(HexColor("#c8102e") if chave == "preta" else black)
-    c.rect(bx, y, bw, altura, fill=1, stroke=0)
-    c.setFillColor(white)
-    for i in range(min(int(grau), 4)):
-        c.rect(bx + 9 + i * 16, y + 3, 6, altura - 6, fill=1, stroke=0)
-    return x + largura  # extremidade direita
+def _faixa(c, cx, y, chave, grau, largura=400):
+    """Desenha a faixa (imagem com tecido, costuras e listras) centralizada em cx."""
+    from . import cinto
+    png = cinto.faixa_png(chave, int(grau))
+    alt = largura / cinto.proporcao()
+    c.drawImage(ImageReader(io.BytesIO(png)), cx - largura / 2, y - (alt - 28) / 2, largura, alt, mask="auto")
 
 
 def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, assinatura_b64=""):
@@ -132,11 +121,11 @@ def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, ass
     c.setFillColor(TINTA); c.setFont("Times-Roman", 12.5)
     c.drawCentredString(cx, H - 192, "Certificamos que")
 
-    tam = 50
-    while c.stringWidth(nome, F_NOME, tam) > W - 260 and tam > 22:
+    tam = 38
+    while c.stringWidth(nome, F_NOME, tam) > W - 260 and tam > 20:
         tam -= 2
     c.setFillColor(OURO_ESC); c.setFont(F_NOME, tam)
-    c.drawCentredString(cx, H - 236, nome)
+    c.drawCentredString(cx, H - 232, nome)
     nw = min(c.stringWidth(nome, F_NOME, tam) + 70, W - 200)
     c.setStrokeColor(OURO); c.setLineWidth(.9); c.line(cx - nw / 2, H - 246, cx + nw / 2, H - 246)
 

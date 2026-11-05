@@ -5,6 +5,15 @@
   {% if has_add_permission %}<li><a href="{% url cl.opts|admin_urlname:'add' %}" class="addlink">+ Adicionar {{ cl.opts.verbose_name }}</a></li>{% endif %}
 {% endblock %}
 {% block filters %}{% endblock %}
+{% block result_list %}
+{% if cl.result_count == 0 %}
+<div class="estado-vazio">
+  <strong>{% if cl.has_active_filters or cl.query %}Nada encontrado{% else %}Ainda não tem nada aqui{% endif %}</strong>
+  <p>{% if cl.has_active_filters or cl.query %}Tente tirar os filtros ou mudar a busca.{% else %}{{ ajuda|default:"Quando você cadastrar, vai aparecer aqui." }}{% endif %}</p>
+  {% if has_add_permission and not cl.has_active_filters and not cl.query %}<a class="btn-principal" href="{% url cl.opts|admin_urlname:'add' %}">+ Adicionar {{ cl.opts.verbose_name }}</a>{% endif %}
+</div>
+{% else %}{{ block.super }}{% endif %}
+{% endblock %}
 {% block search %}
 {{ block.super }}
 {% if cl.has_filters %}

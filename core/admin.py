@@ -9,9 +9,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 from django.core.cache import cache
 from django import forms
-from django.db.models import Count, Sum
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncMonth
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import format_html
@@ -53,14 +53,32 @@ class PainelAdmin(admin.ModelAdmin):
     def acoes_html(self, *itens):
         return format_html('<div class="acoes-linha">{}</div>', mark_safe("".join(str(i) for i in itens)))
 
+    # --- menu de três pontinhos ---
+    def menu_pontos(self, *itens):
+        return format_html(
+            '<details class="pontos"><summary aria-label="Mais opções"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.9"/>'
+            '<circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></summary><ul>{}</ul></details>',
+            mark_safe("".join(str(i) for i in itens)))
+
+    def item_link(self, obj, nome, texto, perigo=False):
+        return format_html('<li><a href="{}" class="{}">{}</a></li>', self._url(nome, obj), "perigo" if perigo else "", texto)
+
+    def item_post(self, obj, nome, texto):
+        return format_html('<li><form method="post" action="{}" class="acao-linha"><button type="submit">{}</button></form></li>',
+                           self._url(nome, obj), texto)
+
     def rota_post(self, nome, funcao, mensagem):
-        """Cria uma rota <pk>/<nome>/ que executa `funcao(obj)` e volta para a lista."""
+        """Cria uma rota <pk>/<nome>/ que executa `funcao(obj)`. Pelo botão volta para a lista; por fetch responde JSON."""
         o = self.model._meta
 
         def view(request, pk):
             obj = self.get_object(request, str(pk))
-            if request.method == "POST" and obj is not None and self.has_change_permission(request, obj):
+            feito = request.method == "POST" and obj is not None and self.has_change_permission(request, obj)
+            if feito:
                 funcao(obj)
+            if request.headers.get("X-Requested-With") == "fetch":
+                return JsonResponse({"ok": bool(feito)})
+            if feito:
                 self.message_user(request, mensagem.format(obj=obj), messages.SUCCESS)
             return redirect(request.META.get("HTTP_REFERER") or reverse(f"admin:{o.app_label}_{o.model_name}_changelist"))
 
@@ -74,36 +92,24 @@ class GraduacaoInline(admin.TabularInline):
 
 @admin.register(Aluno)
 class AlunoAdmin(PainelAdmin):
-    list_display = ("nome", "faixa_visual", "idade", "turma", "status", "botoes")
+    list_display = ("nome", "faixa_visual", "idade", "turma", "situacao", "menu")
     list_filter = ("status", "faixa", "turma")
     search_fields = ("nome", "telefone", "responsavel")
     inlines = [GraduacaoInline]
     list_select_related = ("turma",)
-    ajuda = "Aqui ficam todos os alunos. Clique em Abrir para ver ou mudar os dados. Use +1 grau quando o aluno ganhar uma listra e Certificado para imprimir o certificado."
+    ajuda = "Aqui ficam todos os alunos. Toque nos três pontinhos para editar as informações ou excluir. Para tirar um certificado, use o menu Certificados."
     change_list_template = "admin/core/aluno/change_list.html"
 
     def get_urls(self):
-        return [
-            path("certificado/", self.admin_site.admin_view(self.certificado), name="core_aluno_certificado"),
-            self.rota_post("grau", self._mais_um_grau, "{obj} ganhou mais um grau."),
-        ] + super().get_urls()
-
-    @staticmethod
-    def _mais_um_grau(a):
-        if a.grau < 4:
-            Graduacao.objects.create(aluno=a, faixa=a.faixa, grau=a.grau + 1, observacao="Grau pelo painel")
+        return [path("certificado/", self.admin_site.admin_view(self.certificado), name="core_aluno_certificado")] + super().get_urls()
 
     def certificado(self, request):
-        """Formulário para gerar o certificado em PDF (nome, faixa, grau e data)."""
+        """Certificados: escolhe o aluno na lista e gera o PDF."""
         from . import certificado as cert
 
         faixas = Faixa.choices
-        aluno = None
-        pk = request.GET.get("aluno") or request.POST.get("aluno")
-        if pk and str(pk).isdigit():
-            aluno = Aluno.objects.filter(pk=int(pk)).first()
         if request.method == "POST":
-            nome = request.POST.get("nome", "").strip() or (aluno.nome if aluno else "")
+            nome = request.POST.get("nome", "").strip()
             chave = request.POST.get("faixa", "branca")
             nomes = dict(faixas)
             try:
@@ -121,33 +127,32 @@ class AlunoAdmin(PainelAdmin):
                 resp = HttpResponse(pdf, content_type="application/pdf")
                 resp["Content-Disposition"] = f'inline; filename="certificado-{nome.replace(" ", "-")}.pdf"'
                 return resp
-            self.message_user(request, "Informe o nome do aluno.", messages.ERROR)
-        ctx = {**self.admin_site.each_context(request), "title": "Gerar certificado", "faixas": faixas,
-               "aluno": aluno, "alunos": Aluno.objects.all(), "hoje": date.today().isoformat(),
+        ctx = {**self.admin_site.each_context(request), "title": "Certificados", "faixas": faixas,
+               "alunos": list(Aluno.objects.select_related("turma").order_by("nome")), "hoje": date.today().isoformat(),
+               "abrir": request.GET.get("aluno", ""),
                "tem_assinatura": bool(Assinatura.objects.exclude(imagem="").exists()), "opts": self.model._meta}
         return render(request, "admin/core/aluno/certificado.html", ctx)
 
     @admin.display(description="Faixa")
     def faixa_visual(self, obj):
-        riscas = mark_safe('<i style="display:inline-block;width:3px;height:12px;background:#fff;margin-left:3px"></i>' * obj.grau)
+        barras = mark_safe("<b></b>" * min(obj.grau, 4))
         return format_html(
-            '<span style="display:inline-flex;align-items:center;gap:8px">'
-            '<span style="display:inline-flex;align-items:center;justify-content:flex-end;width:74px;height:14px;'
-            'background:{};border:1px solid #666;padding-right:6px">'
-            '<span style="background:#111;display:inline-flex;height:100%;padding:0 2px;align-items:center">{}</span></span>{}</span>',
-            COR_FAIXA.get(obj.faixa, "#444"), riscas, obj.get_faixa_display(),
-        )
+            '<span class="faixa-chip"><span class="cinto {}" style="--cor:{}">'
+            '<i class="cinto-barra">{}</i></span><em>{}</em></span>',
+            "preta" if obj.faixa == "preta" else "", COR_FAIXA.get(obj.faixa, "#444"), barras, obj.get_faixa_display().split(" (")[0])
 
-    @admin.display(description="O que fazer")
-    def botoes(self, obj):
-        itens = [self.botao_link(obj, "change", "Abrir")]
-        if obj.grau < 4:
-            itens.append(self.botao_post(obj, "grau", "+1 grau"))
-        itens.append(format_html('<a class="btn" href="{}?aluno={}">Certificado</a>', reverse("admin:core_aluno_certificado"), obj.pk))
-        return self.acoes_html(*itens)
+    @admin.display(description="Situação", ordering="status")
+    def situacao(self, obj):
+        classe = {"ativa": "ok", "trancada": "novo", "cancelada": "off"}.get(obj.status, "")
+        return format_html('<span class="pilula {}">{}</span>', classe, obj.get_status_display())
+
+    @admin.display(description="")
+    def menu(self, obj):
+        return self.menu_pontos(self.item_link(obj, "change", "Editar informações"), self.item_link(obj, "delete", "Excluir", True))
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
+
         def calcula():
             return {
                 "total": Aluno.objects.count(),
@@ -176,39 +181,57 @@ class GraduacaoAdmin(PainelAdmin):
 @admin.register(Presenca)
 class PresencaAdmin(PainelAdmin):
     list_display = ("aluno", "data")
-    list_select_related = ("aluno",)
-    ajuda = "Lista de quem veio em cada dia. Para marcar a presença de hoje use o botão Chamada rápida."
     list_filter = ("data", "aluno__turma")
+    list_select_related = ("aluno",)
     autocomplete_fields = ("aluno",)
-    change_list_template = "admin/core/presenca/change_list.html"
+    ajuda = "Lista de quem veio em cada dia. Para marcar a presença de hoje use a Chamada, no menu."
 
     def get_urls(self):
         return [path("chamada/", self.admin_site.admin_view(self.chamada), name="core_presenca_chamada")] + super().get_urls()
 
     def chamada(self, request):
-        """Chamada rápida: marca a presença de vários alunos de uma turma de uma vez."""
-        turmas = Turma.objects.all()
-        turma_id = request.POST.get("turma") or request.GET.get("turma") or ""
+        """Chamada: 1) escolhe a turma, 2) liga ou desliga cada aluno e salva. Mostra a frequência do mês."""
+        base = {**self.admin_site.each_context(request), "title": "Chamada", "opts": self.model._meta}
         try:
             dia = date.fromisoformat(request.POST.get("data") or request.GET.get("data") or "")
         except ValueError:
             dia = date.today()
-        alunos = Aluno.objects.filter(status=Aluno.Status.ATIVA)
-        if turma_id.isdigit():
-            alunos = alunos.filter(turma_id=int(turma_id))
+        param = request.POST.get("turma") or request.GET.get("turma") or ""
+        if not param:
+            turmas = Turma.objects.annotate(n=Count("aluno", filter=Q(aluno__status=Aluno.Status.ATIVA)))
+            return render(request, "admin/core/presenca/chamada.html", {
+                **base, "passo": 1, "turmas": turmas, "total": Aluno.objects.filter(status=Aluno.Status.ATIVA).count()})
+        alunos_qs = Aluno.objects.filter(status=Aluno.Status.ATIVA).select_related("turma").order_by("nome")
+        turma = None
+        if param != "todos":
+            turma = Turma.objects.filter(pk=int(param)).first() if param.isdigit() else None
+            if turma is None:
+                return redirect(reverse("admin:core_presenca_chamada"))
+            alunos_qs = alunos_qs.filter(turma=turma)
+        alunos = list(alunos_qs)
+        ids = [a.pk for a in alunos]
         if request.method == "POST" and request.POST.get("salvar"):
-            marcados = {int(x) for x in request.POST.getlist("aluno") if x.isdigit()}
-            ids = set(alunos.values_list("pk", flat=True))
-            Presenca.objects.filter(data=dia, aluno_id__in=ids - marcados).delete()
-            for pk in marcados & ids:
+            marcados = {int(x) for x in request.POST.getlist("aluno") if x.isdigit()} & set(ids)
+            Presenca.objects.filter(data=dia, aluno_id__in=set(ids) - marcados).delete()
+            for pk in marcados:
                 Presenca.objects.get_or_create(aluno_id=pk, data=dia)
-            self.message_user(request, f"Chamada de {dia:%d/%m/%Y} salva: {len(marcados & ids)} presente(s).", messages.SUCCESS)
-            return redirect(f"{reverse('admin:core_presenca_chamada')}?turma={turma_id}&data={dia.isoformat()}")
-        presentes = set(Presenca.objects.filter(data=dia).values_list("aluno_id", flat=True))
-        ctx = {**self.admin_site.each_context(request), "title": "Chamada rápida", "turmas": turmas,
-               "turma_id": turma_id, "dia": dia.isoformat(), "alunos": alunos, "presentes": presentes,
-               "opts": self.model._meta}
-        return render(request, "admin/core/presenca/chamada.html", ctx)
+            self.message_user(request, f"Chamada de {dia:%d/%m/%Y} salva: {len(marcados)} presente(s) de {len(ids)}.", messages.SUCCESS)
+            return redirect(f"{reverse('admin:core_presenca_chamada')}?turma={param}&data={dia.isoformat()}")
+        salvos = set(Presenca.objects.filter(data=dia, aluno_id__in=ids).values_list("aluno_id", flat=True))
+        ja_salva = bool(salvos)
+        ini = dia.replace(day=1)
+        no_mes = Presenca.objects.filter(aluno_id__in=ids, data__range=(ini, dia))
+        contagem = dict(no_mes.values("aluno_id").annotate(n=Count("id")).values_list("aluno_id", "n"))
+        aulas = no_mes.values("data").distinct().count()
+        linhas = []
+        for a in alunos:
+            n = contagem.get(a.pk, 0)
+            linhas.append({"aluno": a, "presente": (a.pk in salvos) if ja_salva else True, "n": n,
+                           "pct": round(n / aulas * 100) if aulas else None})
+        return render(request, "admin/core/presenca/chamada.html", {
+            **base, "passo": 2, "turma": turma, "param": param, "linhas": linhas, "aulas": aulas, "ja_salva": ja_salva,
+            "dia": dia, "dia_iso": dia.isoformat(), "dia_ant": (dia - timedelta(days=1)).isoformat(),
+            "dia_prox": (dia + timedelta(days=1)).isoformat(), "mes": ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"][dia.month - 1]})
 
 
 @admin.register(Turma)
@@ -225,7 +248,7 @@ class TurmaAdmin(PainelAdmin):
 
 @admin.register(Interessado)
 class InteressadoAdmin(PainelAdmin):
-    ajuda = "Pessoas que preencheram a ficha Quero treinar no site. Chame no WhatsApp e depois toque em Já falei com a pessoa."
+    ajuda = "Pessoas que preencheram a ficha Quero treinar no site. Toque em WhatsApp para chamar: ao chamar, a pessoa já fica marcada como contatada."
     list_display = ("nome", "telefone", "idade", "situacao", "botoes")
     list_filter = ("contatado",)
     search_fields = ("nome", "telefone")
@@ -244,17 +267,22 @@ class InteressadoAdmin(PainelAdmin):
             return mark_safe('<span class="pilula ok">Já contatado</span>')
         return mark_safe('<span class="pilula novo">Novo</span>')
 
-    @admin.display(description="O que fazer")
+    @admin.display(description="")
     def botoes(self, obj):
         numero = "".join(c for c in obj.telefone if c.isdigit())
         if len(numero) <= 11:
             numero = "55" + numero
         texto = quote(f"Oi {obj.nome}, aqui é do CT Salvação! Recebemos seu pedido para treinar. Vamos combinar sua aula experimental?")
-        itens = [format_html('<a class="btn btn-zap" href="https://wa.me/{}?text={}" target="_blank" rel="noopener">Chamar no WhatsApp</a>', numero, texto)]
+        marca = self._url("contatado", obj) if not obj.contatado else ""
+        zap = format_html(
+            '<a class="btn btn-zap" href="https://wa.me/{}?text={}" target="_blank" rel="noopener" data-chamar="{}">'
+            '<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.7 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>WhatsApp</a>',
+            numero, texto, marca)
+        itens = []
         if not obj.contatado:
-            itens.append(self.botao_post(obj, "contatado", "Já falei com a pessoa", "ok"))
-        itens.append(self.botao_link(obj, "delete", "Excluir", "perigo"))
-        return self.acoes_html(*itens)
+            itens.append(self.item_post(obj, "contatado", "Marcar como contatado"))
+        itens.append(self.item_link(obj, "delete", "Excluir", True))
+        return self.acoes_html(zap, self.menu_pontos(*itens))
 
 
 def brl(v):

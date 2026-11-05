@@ -1,29 +1,66 @@
 {% extends "admin/base_site.html" %}
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Início</a> › <a href="{% url 'admin:core_aluno_changelist' %}">Alunos</a> › Gerar certificado</div>{% endblock %}
+{% load painel_extras %}
+{% block content_title %}<h1>Certificados</h1>{% endblock %}
 {% block content %}
+<p class="ajuda-caixa">Escolha o aluno na lista para gerar o certificado em PDF. A faixa e o grau vêm preenchidos, é só conferir a data. Se a pessoa não estiver cadastrada, use o botão Outra pessoa.</p>
 {% if not tem_assinatura %}<p class="aviso-ass">Ainda não há assinatura cadastrada: o certificado sai com a linha em branco para assinar à mão. <a href="{% url 'admin:core_assinatura_changelist' %}">Cadastrar assinatura</a></p>{% endif %}
-<form method="post" class="cert-form" target="_blank">
-  {% csrf_token %}
-  <label>Aluno (opcional)
-    <select name="aluno" id="sel-aluno">
-      <option value="">— digitar o nome —</option>
-      {% for a in alunos %}<option value="{{ a.pk }}" data-nome="{{ a.nome }}" data-faixa="{{ a.faixa }}" data-grau="{{ a.grau }}" {% if aluno and aluno.pk == a.pk %}selected{% endif %}>{{ a.nome }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Nome no certificado <input name="nome" id="f-nome" value="{{ aluno.nome|default:'' }}" required></label>
-  <label>Faixa
-    <select name="faixa" id="f-faixa">{% for k, v in faixas %}<option value="{{ k }}" {% if aluno and aluno.faixa == k %}selected{% endif %}>{{ v }}</option>{% endfor %}</select>
-  </label>
-  <label>Grau (0 a 4) <input type="number" name="grau" id="f-grau" min="0" max="4" value="{{ aluno.grau|default:0 }}"></label>
-  <label>Data da graduação <input type="date" name="data" value="{{ hoje }}" required></label>
-  <input type="submit" value="Gerar PDF" class="default">
-</form>
+<div class="cert-topo">
+  <input type="search" id="busca-cert" placeholder="Buscar aluno pelo nome" autocomplete="off">
+  <button type="button" class="btn" id="cert-outra">Outra pessoa</button>
+</div>
+<ul class="cert-lista" id="cert-lista">
+  {% for a in alunos %}
+  <li data-nome="{{ a.nome|lower }}">
+    <button type="button" class="cert-linha" data-id="{{ a.pk }}" data-nome="{{ a.nome }}" data-faixa="{{ a.faixa }}" data-grau="{{ a.grau }}">
+      <span class="cert-nome">{{ a.nome }}</span>
+      <span class="aluno-meta">
+        {% if a.turma %}<span class="modalidade {{ a.turma.modalidade }}">{{ a.turma.get_modalidade_display }}</span>{% endif %}
+        <span class="faixa-chip"><span class="cinto {% if a.faixa == 'preta' %}preta{% endif %}" style="--cor: {{ a.faixa|cor_faixa }}"><i class="cinto-barra">{{ a.grau|listras }}</i></span><em>{{ a.get_faixa_display }}</em></span>
+      </span>
+      <span class="cert-ir">Gerar certificado</span>
+    </button>
+  </li>
+  {% empty %}
+  <li class="estado-vazio"><strong>Nenhum aluno cadastrado</strong><p>Cadastre um aluno para gerar o certificado dele, ou use o botão Outra pessoa.</p></li>
+  {% endfor %}
+</ul>
+
+<dialog id="cert-dialogo" class="caixinha-cert">
+  <form method="post" target="_blank" id="cert-form">
+    {% csrf_token %}
+    <h2>Gerar certificado</h2>
+    <label>Nome no certificado <input name="nome" id="f-nome" required></label>
+    <div class="cert-duas">
+      <label>Faixa
+        <select name="faixa" id="f-faixa">{% for k, v in faixas %}<option value="{{ k }}">{{ v }}</option>{% endfor %}</select>
+      </label>
+      <label>Grau (0 a 4) <input type="number" name="grau" id="f-grau" min="0" max="4" value="0"></label>
+    </div>
+    <label>Data da graduação <input type="date" name="data" id="f-data" value="{{ hoje }}" required></label>
+    <div class="cert-botoes">
+      <button type="button" class="btn" id="cert-cancelar">Cancelar</button>
+      <button type="submit" class="btn-principal">Gerar PDF</button>
+    </div>
+  </form>
+</dialog>
 <script>
-document.getElementById('sel-aluno').addEventListener('change', function(){
-  var o=this.selectedOptions[0]; if(!o||!o.dataset.nome) return;
-  document.getElementById('f-nome').value=o.dataset.nome;
-  document.getElementById('f-faixa').value=o.dataset.faixa;
-  document.getElementById('f-grau').value=o.dataset.grau;
-});
+(function () {
+  var dlg = document.getElementById('cert-dialogo'), nome = document.getElementById('f-nome'),
+      faixa = document.getElementById('f-faixa'), grau = document.getElementById('f-grau');
+  function abre(n, f, g) { nome.value = n || ''; faixa.value = f || 'branca'; grau.value = g || 0; dlg.showModal(); (n ? grau : nome).focus(); }
+  document.querySelectorAll('.cert-linha').forEach(function (b) {
+    b.addEventListener('click', function () { abre(b.dataset.nome, b.dataset.faixa, b.dataset.grau); });
+  });
+  document.getElementById('cert-outra').addEventListener('click', function () { abre('', 'branca', 0); });
+  document.getElementById('cert-cancelar').addEventListener('click', function () { dlg.close(); });
+  document.getElementById('cert-form').addEventListener('submit', function () { setTimeout(function () { dlg.close(); }, 400); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  document.getElementById('busca-cert').addEventListener('input', function (e) {
+    var q = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('#cert-lista li[data-nome]').forEach(function (li) { li.style.display = li.dataset.nome.indexOf(q) > -1 ? '' : 'none'; });
+  });
+  var pre = "{{ abrir|escapejs }}";
+  if (pre) { var b = document.querySelector('.cert-linha[data-id="' + pre + '"]'); if (b) b.click(); }
+})();
 </script>
 {% endblock %}

@@ -38,3 +38,24 @@ def versao_arquivo(caminho):
         return int(arq.stat().st_mtime)
     except OSError:
         return 0
+
+
+CORES_FAIXA = {
+    "branca": "#f2f2f2", "cinza": "#9a9a9a", "amarela": "#f4c20d", "laranja": "#f08a24",
+    "verde": "#2e9e4f", "azul": "#2457d6", "roxa": "#7a3bc2", "marrom": "#6b3f1d", "preta": "#161618",
+}
+
+
+@register.filter
+def cor_faixa(faixa):
+    return CORES_FAIXA.get(faixa, "#555")
+
+
+@register.filter
+def listras(grau):
+    from django.utils.safestring import mark_safe
+    try:
+        n = max(0, min(4, int(grau)))
+    except (TypeError, ValueError):
+        n = 0
+    return mark_safe("<b></b>" * n)
