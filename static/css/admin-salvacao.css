@@ -582,3 +582,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent) !importa
   #toolbar form > div { flex-wrap: wrap; } #toolbar #searchbar { flex: 1 1 140px; min-width: 0; width: 100%; }
   .ajuda-caixa + .resumo { margin-top: 0; }
 }
+
+/* formulários: campos dentro da caixa e rodapé alinhado */
+.form-row .flex-container { display: block; }
+.form-row input[type=text], .form-row input[type=email], .form-row input[type=url], .form-row input[type=password], .form-row input[type=tel], .form-row input[type=number], .form-row input[type=date], .form-row select, .form-row textarea { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+.form-row input[type=number], .form-row input[type=date] { max-width: 260px !important; }
+.form-row input[type=checkbox] { width: 18px !important; min-height: 0; accent-color: var(--accent); }
+fieldset.module .form-row { overflow: hidden; }
+.aligned label { float: none; width: auto; display: block; padding: 0 0 6px; }
+.aligned .form-row > div, .aligned .form-row .checkbox-row { padding-left: 0; }
+.submit-row { display: flex !important; flex-direction: row !important; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; background: var(--card) !important; }
+.submit-row input[name="_save"] { order: 2; margin-left: auto; height: 46px; padding: 0 30px; min-height: 46px; font-size: .95rem; text-transform: none; letter-spacing: 0; }
+.submit-row a.deletelink, .submit-row p.deletelink-box a { order: 1; display: inline-flex !important; align-items: center; justify-content: center; height: 46px; padding: 0 22px !important; margin: 0 !important; width: auto; border: 1px solid var(--accent) !important; border-radius: 12px; background: transparent !important; color: var(--accent-hi) !important; font: 600 .92rem "Inter", sans-serif; line-height: 1; }
+.submit-row a.deletelink:hover { background: var(--accent-soft) !important; }
+.submit-row p.deletelink-box { margin: 0; float: none; order: 1; }
+.form-row .flex-container, .aligned .form-row > div, .form-row > div { width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; }
+fieldset.module .form-row { padding: 14px 20px !important; }
+fieldset.module .form-row .checkbox-row { display: flex; gap: 10px; align-items: center; }
