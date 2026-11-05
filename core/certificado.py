@@ -1,11 +1,10 @@
 """Geração do certificado de graduação em PDF (reportlab).
 
-Papel creme, moldura azul e dourada, nome em letra cursiva, faixa desenhada com a
-medalha do Icon na ponta, selo de cera azul e a logo do Projeto Salvação no topo.
+Papel creme, moldura azul e dourada, nome em letra cursiva, faixa desenhada, as logos do CT e do Icon no topo
+e a assinatura do professor.
 """
 import base64
 import io
-import math
 
 from django.conf import settings
 from reportlab.lib.colors import HexColor, black, white
@@ -111,32 +110,6 @@ def _faixa(c, cx, y, chave, grau, largura=340, altura=28):
     return x + largura  # extremidade direita
 
 
-def _medalha(c, cx, cy, r=25):
-    c.setFillColor(HexColor("#00000022")); c.circle(cx + 1.5, cy - 2, r + 1, fill=1, stroke=0)
-    c.setFillColor(OURO); c.circle(cx, cy, r, fill=1, stroke=0)
-    c.setFillColor(HexColor("#f3d98b")); c.circle(cx, cy, r - 3, fill=1, stroke=0)
-    c.setFillColor(white); c.circle(cx, cy, r - 6, fill=1, stroke=0)
-    icone = _img("icon.png")
-    if icone:
-        lado = (r - 6) * 1.55
-        c.drawImage(icone, cx - lado / 2, cy - lado / 2, lado, lado, mask="auto")
-
-
-def _selo(c, cx, cy, r=31):
-    c.setFillColor(HexColor("#00000030")); c.circle(cx + 2, cy - 3, r, fill=1, stroke=0)
-    c.setFillColor(AZUL)
-    for i in range(0, 360, 12):
-        a = math.radians(i)
-        c.circle(cx + (r - 4) * math.cos(a), cy + (r - 4) * math.sin(a), 6, fill=1, stroke=0)
-    c.circle(cx, cy, r - 4, fill=1, stroke=0)
-    c.setStrokeColor(AZUL_CLARO); c.setLineWidth(1.6); c.circle(cx, cy, r - 10, fill=0, stroke=1)
-    c.setStrokeColor(HexColor("#2c4d9c")); c.setLineWidth(1); c.circle(cx, cy, r - 7, fill=0, stroke=1)
-    icone = _img("icon.png")
-    if icone:
-        lado = (r - 11) * 1.5
-        c.drawImage(icone, cx - lado / 2, cy - lado / 2, lado, lado, mask="auto")
-
-
 def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, assinatura_b64=""):
     buf = io.BytesIO()
     W, H = landscape(A4)
@@ -146,12 +119,14 @@ def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, ass
     _moldura(c, W, H)
     cx = W / 2
 
-    # logo do Projeto Salvação no topo
-    logo = _img("logo-projeto.png")
-    if logo:
-        c.setFillColor(white); c.circle(cx, H - 100, 40, fill=1, stroke=0)
-        c.drawImage(logo, cx - 36, H - 136, 72, 72, mask="auto")
-        c.setStrokeColor(OURO); c.setLineWidth(2.4); c.circle(cx, H - 100, 38.5, fill=0, stroke=1)
+    # topo: logo do CT Salvação e logo do Icon lado a lado
+    ct, icone = _img("logo.png"), _img("icon.png")
+    if ct:
+        c.setFillColor(white); c.circle(cx - 46, H - 100, 40, fill=1, stroke=0)
+        c.drawImage(ct, cx - 82, H - 136, 72, 72, mask="auto")
+        c.setStrokeColor(OURO); c.setLineWidth(2.4); c.circle(cx - 46, H - 100, 38.5, fill=0, stroke=1)
+    if icone:
+        c.drawImage(icone, cx + 8, H - 138, 76, 76, mask="auto")
 
     _texto_espacado(c, cx, H - 170, "CERTIFICADO DE GRADUAÇÃO", F_TITULO, 27, 1.6, OURO, grosso=.5)
     c.setFillColor(TINTA); c.setFont("Times-Roman", 12.5)
@@ -168,8 +143,7 @@ def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, ass
     c.setFillColor(TINTA); c.setFont("Times-Roman", 13)
     c.drawCentredString(cx, H - 270, "concluiu com dedicação e disciplina o seu período de treinos e foi graduado(a) à")
 
-    ponta = _faixa(c, cx - 14, H - 338, faixa_chave, grau)
-    _medalha(c, ponta + 4, H - 338 + 14)
+    _faixa(c, cx, H - 338, faixa_chave, grau)
 
     rotulo = f"Faixa {faixa_nome}" + (f" · {grau}º grau" if int(grau) else "")
     _texto_espacado(c, cx, H - 378, rotulo, F_TITULO, 16, .8, TINTA, grosso=.35)
@@ -177,7 +151,7 @@ def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, ass
     c.drawCentredString(cx, H - 399, f"em {data_por_extenso(data)}, no CT Salvação — Projeto Salvação.")
 
     # assinatura (à esquerda do selo)
-    sx, ay = cx - 105, 112
+    sx, ay = cx, 112
     if assinatura_b64:
         try:
             raw = base64.b64decode(assinatura_b64.split(",")[-1])
@@ -193,7 +167,6 @@ def gerar(nome, faixa_chave, faixa_nome, grau, data, prof_nome, prof_titulo, ass
     c.setFont("Times-Roman", 9.5)
     c.drawCentredString(sx, ay - 27, prof_titulo)
 
-    _selo(c, cx + 135, 100)
     c.showPage()
     c.save()
     return buf.getvalue()
