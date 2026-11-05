@@ -1,0 +1,43 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+{% block breadcrumbs %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+<div class="painel">
+  <p class="painel-data">{{ hoje|date:"l, j \d\e F" }}</p>
+  <section class="stats">
+    <a href="{% url 'admin:core_aluno_changelist' %}?status__exact=ativa"><b>{{ stats.ativos }}</b><span>alunos ativos</span></a>
+    <a href="{% url 'admin:core_interessado_changelist' %}?contatado__exact=0"><b>{{ stats.novos }}</b><span>interessados para chamar</span></a>
+    <a href="{% url 'admin:core_presenca_chamada' %}"><b>{{ stats.presentes_hoje }}</b><span>presentes hoje</span></a>
+    <a href="{% url 'admin:core_doacao_changelist' %}"><b>{{ stats.doacoes_mes }}</b><span>doados no mês</span></a>
+  </section>
+
+  <section class="atalhos">
+    <a class="atalho forte" href="{% url 'admin:core_presenca_chamada' %}"><strong>Fazer a chamada</strong><small>marcar quem veio hoje</small></a>
+    <a class="atalho" href="{% url 'admin:core_aluno_add' %}"><strong>Novo aluno</strong><small>matricular na turma</small></a>
+    <a class="atalho" href="{% url 'admin:core_aluno_certificado' %}"><strong>Gerar certificado</strong><small>PDF para imprimir</small></a>
+    <a class="atalho" href="{% url 'admin:core_doacao_add' %}"><strong>Anotar doação</strong><small>Pix, dinheiro ou outra</small></a>
+  </section>
+
+  <div class="duas">
+    <section class="caixa">
+      <h2>Quem quer treinar</h2>
+      {% for i in interessados %}
+      <div class="linha"><div><strong>{{ i.nome }}</strong><small>{{ i.telefone }}{% if i.idade %} · {{ i.idade }} anos{% endif %}</small></div><a class="btn-zap" href="{{ i.wa }}" target="_blank" rel="noopener">Chamar</a></div>
+      {% empty %}<p class="vazio">Ninguém esperando contato. Quando alguém preencher a ficha no site, aparece aqui.</p>{% endfor %}
+      {% if interessados %}<a class="ver-todos" href="{% url 'admin:core_interessado_changelist' %}?contatado__exact=0">Ver todos</a>{% endif %}
+    </section>
+    <section class="caixa">
+      <h2>Aniversariantes do mês</h2>
+      {% for a in aniversariantes %}
+      <div class="linha"><div><strong>{{ a.nome }}</strong><small>faixa {{ a.get_faixa_display|lower }}</small></div><span class="dia">dia {{ a.nascimento.day }}</span></div>
+      {% empty %}<p class="vazio">Nenhum aniversariante ativo neste mês.</p>{% endfor %}
+    </section>
+  </div>
+
+  <details class="tudo">
+    <summary>Todas as tabelas</summary>
+    {{ block.super }}
+  </details>
+</div>
+{% endblock %}

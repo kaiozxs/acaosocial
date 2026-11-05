@@ -267,3 +267,34 @@ class AssinaturaAdmin(admin.ModelAdmin):
         if obj:
             return redirect(reverse("admin:core_assinatura_change", args=[obj.pk]))
         return redirect(reverse("admin:core_assinatura_add"))
+
+
+def _com_zap(i):
+    numero = "".join(c for c in i.telefone if c.isdigit())
+    if len(numero) <= 11:
+        numero = "55" + numero
+    i.wa = f"https://wa.me/{numero}?text=" + quote(f"Oi {i.nome}, aqui é do CT Salvação! Recebemos seu pedido para treinar. Vamos combinar sua aula experimental?")
+    return i
+
+
+def painel_index(request, extra_context=None):
+    """Tela inicial do painel: números do dia, atalhos e interessados para chamar."""
+    hoje = date.today()
+    mes = Doacao.objects.filter(data__year=hoje.year, data__month=hoje.month).aggregate(t=Sum("valor"))["t"] or 0
+    ctx = {
+        "stats": {
+            "ativos": Aluno.objects.filter(status=Aluno.Status.ATIVA).count(),
+            "novos": Interessado.objects.filter(contatado=False).count(),
+            "doacoes_mes": brl(mes),
+            "presentes_hoje": Presenca.objects.filter(data=hoje).count(),
+        },
+        "interessados": [_com_zap(i) for i in Interessado.objects.filter(contatado=False)[:5]],
+        "aniversariantes": Aluno.objects.filter(status=Aluno.Status.ATIVA, nascimento__month=hoje.month).order_by("nascimento__day")[:6],
+        "hoje": hoje,
+    }
+    ctx.update(extra_context or {})
+    return _index_original(request, ctx)
+
+
+_index_original = admin.site.index
+admin.site.index = painel_index

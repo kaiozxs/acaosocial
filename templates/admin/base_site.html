@@ -1,6 +1,7 @@
 {% extends "admin/base.html" %}
 {% load static %}
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Projeto Salvação{% endblock %}
+{% block extrahead %}{{ block.super }}<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=Special+Elite&display=swap" rel="stylesheet">{% endblock %}
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin-salvacao.css' %}">{% endblock %}
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">PROJETO <em>SALVAÇÃO</em></a></h1>

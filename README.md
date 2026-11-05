@@ -1,6 +1,6 @@
 # Projeto Salvação — Sistema de matrículas e site
 
-Site público + painel administrativo para o **Projeto Salvação** (aulas de jiu-jitsu para adultos, jovens e adolescentes; o projeto é sem fins lucrativos e funciona dentro do CT Salvação).
+Site público + painel administrativo para o **Projeto Salvação** (aulas de jiu-jitsu e muay thai para adultos, jovens e adolescentes; o projeto é sem fins lucrativos e funciona dentro do CT Salvação).
 Responsável: professor **Melino José** (faixa preta 1º grau de jiu-jitsu, faixa marrom de luta livre).
 
 ## O que o sistema faz
@@ -10,7 +10,8 @@ Responsável: professor **Melino José** (faixa preta 1º grau de jiu-jitsu, fai
 
 ## Contato
 - Localização: bairro Coelho
-- Instagram: https://www.instagram.com/projetosalvacaosg/
+- Instagram do CT: https://www.instagram.com/ct.salvacao.sg/
+- Instagram do Projeto: https://www.instagram.com/projetosalvacaosg/
 - WhatsApp/telefone: +55 21 99841-2052
 
 ## Tecnologias

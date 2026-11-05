@@ -57,7 +57,7 @@ DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=60,
-        ssl_require=bool(os.getenv("DATABASE_URL")),
+        ssl_require=os.getenv("DATABASE_URL", "").startswith("postgres"),
     )
 }
 
@@ -85,9 +85,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Dados do projeto exibidos no site
-PIX_CHAVE = os.getenv("PIX_CHAVE", "COLOQUE-A-CHAVE-PIX-AQUI")
-PIX_FAVORECIDO = os.getenv("PIX_FAVORECIDO", "Melino José")
+PIX_CHAVE = os.getenv("PIX_CHAVE", "0dd14994-3e18-4e3f-aaea-c0d2480c65d1")
+PIX_COPIA_COLA = os.getenv("PIX_COPIA_COLA", "00020126580014br.gov.bcb.pix01360dd14994-3e18-4e3f-aaea-c0d2480c65d127600016BR.COM.PAGSEGURO0136517FFAD1-BEEB-4A9A-8D59-7109A46BF1F85204549953039865802BR5925MELINO JOSE DE CARVALHO N6011Sao Goncalo62290525PAGS0000000002611051531726304CA8C")
+PIX_FAVORECIDO = os.getenv("PIX_FAVORECIDO", "Melino José de Carvalho Neto")
 WHATSAPP = os.getenv("WHATSAPP", "5521998412052")  # só dígitos, com DDI
 WHATSAPP_EXIBIR = os.getenv("WHATSAPP_EXIBIR", "(21) 99841-2052")
+INSTAGRAM_CT_URL = os.getenv("INSTAGRAM_CT_URL", "https://www.instagram.com/ct.salvacao.sg/")
+INSTAGRAM_CT_USUARIO = os.getenv("INSTAGRAM_CT_USUARIO", "@ct.salvacao.sg")
 INSTAGRAM_URL = os.getenv("INSTAGRAM_URL", "https://www.instagram.com/projetosalvacaosg/")
 INSTAGRAM_USUARIO = os.getenv("INSTAGRAM_USUARIO", "@projetosalvacaosg")

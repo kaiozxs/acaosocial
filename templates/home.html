@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Projeto Salvação — Jiu-Jitsu</title>
-  <meta name="description" content="Projeto Salvação: jiu-jitsu para adultos, jovens e adolescentes. O Projeto Salvação é sem fins lucrativos.">
+  <title>CT Salvação — Jiu-Jitsu e Muay Thai</title>
+  <meta name="description" content="CT Salvação: jiu-jitsu e muay thai para adultos, jovens e adolescentes. O Projeto Salvação é sem fins lucrativos.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=Arvo:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
   <link rel="icon" href="{% static 'img/favicon.png' %}">
-  <link rel="stylesheet" href="{% static 'css/site.css' %}?v=7">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}?v=14">
 </head>
 <body>
 
@@ -36,11 +36,11 @@
       </div>
       <div class="carta salv">
         <div class="aro"></div>
-        <div class="disco"><img src="{% static 'img/logo.png' %}" alt="Projeto Salvação"></div>
+        <div class="disco"><img src="{% static 'img/logo.png' %}" alt="CT Salvação e Projeto Salvação"></div>
       </div>
       <h1 class="so-leitor">CT Salvação — Projeto Salvação</h1>
     </div>
-    <p class="frase">Jiu-jitsu para adultos, jovens e adolescentes.<br>Todo mundo é bem-vindo no tatame.</p>
+    <p class="frase">Jiu-jitsu e muay thai para adultos, jovens e adolescentes.<br>Todo mundo é bem-vindo no tatame.</p>
   </section>
 
   <div class="faixa-div" aria-hidden="true"><span class="ponta"><i></i><i></i><i></i><i></i></span></div>
@@ -53,11 +53,12 @@
   <section id="projeto" class="projeto reveal">
     <div class="texto">
       <h2>O projeto</h2>
-      <p>O Projeto Salvação é um centro de treinamento de jiu-jitsu aberto à comunidade. A gente ensina técnica, mas o que mais importa é o que fica fora do tatame: disciplina, respeito e saúde.</p>
+      <p>O Projeto Salvação funciona dentro do CT Salvação, um centro de treinamento de jiu-jitsu e muay thai aberto à comunidade. A gente ensina técnica, mas o que mais importa é o que fica fora do tatame: disciplina, respeito e saúde.</p>
       <p>Aqui ninguém treina sozinho. Cada aluno é acompanhado de perto até a troca de faixa.</p>
       <p><strong>Onde estamos:</strong> bairro Coelho.</p>
     </div>
     <div class="patches">
+      <img class="selo" src="{% static 'img/logo-projeto.png' %}" alt="Projeto Salvação" width="220" height="220" loading="lazy">
       <div class="patch"><b>Adultos</b><small>a partir de 18 anos</small></div>
       <div class="patch"><b>Jovens</b><small>treino e disciplina</small></div>
       <div class="patch"><b>Adoles&shy;centes</b><small>base e confiança</small></div>
@@ -97,22 +98,26 @@
     <div class="album" aria-roledescription="carrossel" aria-label="Álbum de fotos dos treinos">
       <div class="folhas" id="folhas" tabindex="0">
         <figure class="pagina" id="p1"><div class="moldura"><img src="{% static 'img/treinos/treino1.jpg' %}" alt="Alongamento antes do treino" draggable="false"></div></figure>
+        <figure class="pagina retrato" id="p11"><div class="moldura"><img src="{% static 'img/treinos/treino11.jpg' %}" alt="Turma infantil e jovens com os professores" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p2"><div class="moldura"><img src="{% static 'img/treinos/treino2.jpg' %}" alt="Momento de oração com a turma" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p3"><div class="moldura"><img src="{% static 'img/treinos/treino3.jpg' %}" alt="Turma toda reunida no tatame" loading="lazy" draggable="false"></div></figure>
+        <figure class="pagina retrato" id="p12"><div class="moldura"><img src="{% static 'img/treinos/treino12.jpg' %}" alt="Equipe com troféu" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p4"><div class="moldura"><img src="{% static 'img/treinos/treino4.jpg' %}" alt="Professor Melino com os alunos" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p5"><div class="moldura"><img src="{% static 'img/treinos/treino5.jpg' %}" alt="Alunos enfileirados após o treino" loading="lazy" draggable="false"></div></figure>
+        <figure class="pagina retrato" id="p13"><div class="moldura"><img src="{% static 'img/treinos/treino13.jpg' %}" alt="Equipe no tatame" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p6"><div class="moldura"><img src="{% static 'img/treinos/treino6.jpg' %}" alt="Turma diante do banner do Projeto Salvação" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p7"><div class="moldura"><img src="{% static 'img/treinos/treino7.jpg' %}" alt="Turma infantil e adultos posando" loading="lazy" draggable="false"></div></figure>
+        <figure class="pagina retrato" style="--ar: 875 / 852" id="p14"><div class="moldura"><img src="{% static 'img/treinos/treino14.jpg' %}" alt="Equipe de camisa preta e laranja diante do losango Icon" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p8"><div class="moldura"><img src="{% static 'img/treinos/treino8.jpg' %}" alt="Encontro com a equipe e visitantes" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p9"><div class="moldura"><img src="{% static 'img/treinos/treino9.jpg' %}" alt="Turma adulta com o professor" loading="lazy" draggable="false"></div></figure>
         <figure class="pagina" id="p10"><div class="moldura"><img src="{% static 'img/treinos/treino10.jpg' %}" alt="Turma infantil com os professores" loading="lazy" draggable="false"></div></figure>
       </div>
       <div class="controles">
         <button type="button" class="seta" id="ant" aria-label="Foto anterior">‹</button>
-        <span class="contagem" id="contagem" aria-live="polite">1 de 10</span>
+        <span class="contagem" id="contagem" aria-live="polite">1 de 14</span>
         <button type="button" class="seta" id="prox" aria-label="Próxima foto">›</button>
       </div>
-      <div class="minis" id="minis"><button type="button" class="mini" aria-label="Ir para a foto 1"><img src="{% static 'img/treinos/treino1.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 2"><img src="{% static 'img/treinos/treino2.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 3"><img src="{% static 'img/treinos/treino3.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 4"><img src="{% static 'img/treinos/treino4.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 5"><img src="{% static 'img/treinos/treino5.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 6"><img src="{% static 'img/treinos/treino6.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 7"><img src="{% static 'img/treinos/treino7.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 8"><img src="{% static 'img/treinos/treino8.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 9"><img src="{% static 'img/treinos/treino9.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 10"><img src="{% static 'img/treinos/treino10.jpg' %}" alt="" loading="lazy"></button></div>
+      <div class="minis" id="minis"><button type="button" class="mini" aria-label="Ir para a foto 1"><img src="{% static 'img/treinos/treino1.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 11"><img src="{% static 'img/treinos/treino11.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 2"><img src="{% static 'img/treinos/treino2.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 3"><img src="{% static 'img/treinos/treino3.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 12"><img src="{% static 'img/treinos/treino12.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 4"><img src="{% static 'img/treinos/treino4.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 5"><img src="{% static 'img/treinos/treino5.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 13"><img src="{% static 'img/treinos/treino13.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 6"><img src="{% static 'img/treinos/treino6.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 7"><img src="{% static 'img/treinos/treino7.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 14"><img src="{% static 'img/treinos/treino14.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 8"><img src="{% static 'img/treinos/treino8.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 9"><img src="{% static 'img/treinos/treino9.jpg' %}" alt="" loading="lazy"></button><button type="button" class="mini" aria-label="Ir para a foto 10"><img src="{% static 'img/treinos/treino10.jpg' %}" alt="" loading="lazy"></button></div>
     </div>
   </section>
 
@@ -159,14 +164,24 @@
   <!-- DOAR: patch vermelho costurado -->
   <section id="doar" class="doar reveal">
     <div class="costura">
-      <h2>Ajude a manter o tatame</h2>
-      <p>O Projeto Salvação é sem fins lucrativos. Qualquer valor ajuda nas aulas e no espaço. O Pix vai direto para o professor.</p>
-      <button type="button" class="chave" onclick="navigator.clipboard.writeText('{{ PIX_CHAVE|escapejs }}');this.classList.add('ok')">
-        <small>Chave Pix · toque para copiar</small>
-        <code>{{ PIX_CHAVE }}</code>
-        <span class="ok-msg">Copiado ✓</span>
-      </button>
-      <small>Favorecido: {{ PIX_FAVORECIDO }}</small>
+      <div class="doar-texto">
+        <h2>Ajude a manter o tatame</h2>
+        <p>O Projeto Salvação é sem fins lucrativos. Qualquer valor ajuda nas aulas e no espaço. O Pix vai direto para o professor.</p>
+        <button type="button" class="chave" data-copia="{{ PIX_CHAVE|escapejs }}">
+          <small>Chave Pix · toque para copiar</small>
+          <code>{{ PIX_CHAVE }}</code>
+          <span class="ok-msg">Copiado ✓</span>
+        </button>
+        <button type="button" class="chave chave-cc" data-copia="{{ PIX_COPIA_COLA|escapejs }}">
+          <small>Pix copia e cola · toque para copiar</small>
+          <span class="ok-msg">Copiado ✓</span>
+        </button>
+        <small class="favorecido">Favorecido: {{ PIX_FAVORECIDO }}</small>
+      </div>
+      <figure class="qr">
+        <img src="{% static 'img/pix-qr.png' %}" alt="QR code Pix para doar ao Projeto Salvação" width="260" height="260">
+        <figcaption>Aponte a câmera do banco</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -186,13 +201,14 @@
     <div class="contatos">
       <p>Prefere falar direto?</p>
       <a class="contato" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener"><b>WhatsApp</b><span>{{ WHATSAPP_EXIBIR }}</span></a>
-      <a class="contato" href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener"><b>Instagram</b><span>{{ INSTAGRAM_USUARIO }}</span></a>
+      <a class="contato" href="{{ INSTAGRAM_CT_URL }}" target="_blank" rel="noopener"><b>Instagram do CT</b><span>{{ INSTAGRAM_CT_USUARIO }}</span></a>
+      <a class="contato" href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener"><b>Instagram do Projeto</b><span>{{ INSTAGRAM_USUARIO }}</span></a>
     </div>
   </section>
 </main>
 
 <footer>
-  <span>CT Salvação · Bairro Coelho · Projeto Salvação (sem fins lucrativos) · <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener">{{ INSTAGRAM_USUARIO }}</a> · <a href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">{{ WHATSAPP_EXIBIR }}</a></span>
+  <span>CT Salvação · Bairro Coelho · Projeto Salvação (sem fins lucrativos) · <a href="{{ INSTAGRAM_CT_URL }}" target="_blank" rel="noopener">{{ INSTAGRAM_CT_USUARIO }}</a> · <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener">{{ INSTAGRAM_USUARIO }}</a> · <a href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">{{ WHATSAPP_EXIBIR }}</a></span>
   <b>OSS!</b>
 </footer>
 
@@ -220,6 +236,12 @@ marca(0);})();
 </script>
 <script>
 document.querySelectorAll('.aviso').forEach(function(a){var f=function(){a.classList.add('saindo');setTimeout(function(){a.remove();},400);};a.querySelector('button').onclick=f;setTimeout(f,7000);});
+</script>
+<script>
+document.querySelectorAll('.chave').forEach(function(b){b.addEventListener('click',function(){
+  var t=b.dataset.copia;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(function(){
+    var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();});
+  b.classList.add('ok');setTimeout(function(){b.classList.remove('ok');},2500);});});
 </script>
 </body>
 </html>
