@@ -1,9 +1,46 @@
 {% extends "admin/base.html" %}
 {% load static %}
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Projeto Salvação{% endblock %}
-{% block extrahead %}{{ block.super }}<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=Special+Elite&display=swap" rel="stylesheet">{% endblock %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin-salvacao.css' %}">{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | CT Salvação{% endblock %}
+{% block extrahead %}{{ block.super }}
+<link rel="icon" href="{% static 'img/favicon.png' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin-salvacao.css' %}?v=2">{% endblock %}
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">PROJETO <em>SALVAÇÃO</em></a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">CT <em>Salvação</em></a></h1>
 {% endblock %}
 {% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}
+{% url 'admin:index' as u_inicio %}{% url 'admin:core_aluno_changelist' as u_alunos %}
+{% url 'admin:core_presenca_chamada' as u_chamada %}{% url 'admin:core_interessado_changelist' as u_inter %}
+{% url 'admin:core_doacao_changelist' as u_doa %}{% url 'admin:core_aluno_certificado' as u_cert %}
+{% url 'admin:core_graduacao_changelist' as u_grad %}{% url 'admin:core_presenca_changelist' as u_pres %}
+{% url 'admin:core_turma_changelist' as u_turmas %}{% url 'admin:core_assinatura_changelist' as u_ass %}
+{% url 'admin:auth_user_changelist' as u_users %}
+<nav class="sb" aria-label="Menu principal">
+  <a class="sb-marca" href="{{ u_inicio }}"><img src="{% static 'img/favicon.png' %}" alt=""><span><strong>CT Salvação</strong><small>Painel do professor</small></span></a>
+
+  <a href="{{ u_inicio }}" class="{% if request.path == u_inicio %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Início</a>
+
+  <div class="sb-grupo">Dia a dia</div>
+  <a href="{{ u_chamada }}" class="{% if request.path == u_chamada %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>Chamada</a>
+  <a href="{{ u_alunos }}" class="{% if u_alunos in request.path and 'certificado' not in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7"/><path d="M18 14.2a6.5 6.5 0 013.5 5.8"/></svg>Alunos</a>
+  <a href="{{ u_inter }}" class="{% if u_inter in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.7 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>Interessados</a>
+  <a href="{{ u_cert }}" class="{% if 'certificado' in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/></svg>Certificados</a>
+
+  <div class="sb-grupo">Financeiro</div>
+  <a href="{{ u_doa }}" class="{% if u_doa in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 00-7.1 0L12 7.3l-1.7-1.7a5 5 0 10-7.1 7.1L12 21.5l8.8-8.8a5 5 0 000-7.1z"/></svg>Doações</a>
+
+  <div class="sb-grupo">Cadastros</div>
+  <a href="{{ u_turmas }}" class="{% if u_turmas in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Turmas</a>
+  <a href="{{ u_grad }}" class="{% if u_grad in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M3 8h18v8H3z"/><path d="M16 8v8"/></svg>Graduações</a>
+  <a href="{{ u_pres }}" class="{% if u_pres in request.path and 'chamada' not in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>Histórico de presenças</a>
+
+  <div class="sb-grupo">Sistema</div>
+  <a href="{{ u_ass }}" class="{% if 'assinatura' in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 17c3-6 5-9 6-9s0 6 2 6 3-4 5-4 2 3 5 3"/><path d="M3 21h18"/></svg>Assinatura</a>
+  <a href="{{ u_users }}" class="{% if '/auth/' in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>Usuários</a>
+  <p class="sb-rodape">Projeto Salvação · sem fins lucrativos</p>
+</nav>
+{% endblock %}
