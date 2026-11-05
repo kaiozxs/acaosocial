@@ -1,0 +1,43 @@
+/* Tema do painel: preto e vermelho */
+:root, html[data-theme="light"], html[data-theme="dark"] {
+  --primary: #b3001b;
+  --secondary: #111;
+  --accent: #e10a2b;
+  --primary-fg: #fff;
+  --header-bg: #0b0b0b;
+  --header-color: #fff;
+  --header-branding-color: #fff;
+  --header-link-color: #fff;
+  --breadcrumbs-bg: #1a1a1a;
+  --breadcrumbs-fg: #ddd;
+  --breadcrumbs-link-fg: #fff;
+  --body-bg: #121212;
+  --body-fg: #eee;
+  --body-quiet-color: #aaa;
+  --body-loud-color: #fff;
+  --darkened-bg: #1b1b1b;
+  --selected-bg: #2a1015;
+  --selected-row: #2a1015;
+  --hairline-color: #2e2e2e;
+  --border-color: #333;
+  --link-fg: #ff4d63;
+  --link-hover-color: #fff;
+  --link-selected-fg: #ff4d63;
+  --button-bg: #b3001b;
+  --button-hover-bg: #e10a2b;
+  --default-button-bg: #b3001b;
+  --default-button-hover-bg: #e10a2b;
+  --object-tools-bg: #333;
+  --object-tools-hover-bg: #b3001b;
+  --message-success-bg: #12301b;
+  --message-warning-bg: #3a2d08;
+  --message-error-bg: #3a0b12;
+}
+#header { border-bottom: 3px solid #e10a2b; }
+#site-name a { font-family: "Anton", Impact, sans-serif; letter-spacing: .08em; font-size: 1.4rem; }
+#site-name em { color: #e10a2b; font-style: normal; }
+.module h2, .module caption, .inline-group h2 { background: #1d1d1d; color: #fff; border-left: 4px solid #e10a2b; }
+.resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 18px; }
+.resumo div { background: #1b1b1b; border: 1px solid #333; border-top: 3px solid #e10a2b; padding: 14px 16px; }
+.resumo b { display: block; font-size: 2.2rem; line-height: 1; color: #fff; }
+.resumo span { color: #aaa; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }

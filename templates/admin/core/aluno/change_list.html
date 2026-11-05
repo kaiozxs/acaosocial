@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+<div class="resumo">
+  <div><b>{{ resumo.total }}</b><span>alunos cadastrados</span></div>
+  <div><b>{{ resumo.ativos }}</b><span>matrículas ativas</span></div>
+  <div><b>{{ resumo.interessados }}</b><span>interessados p/ contatar</span></div>
+</div>
+{{ block.super }}
+{% endblock %}
