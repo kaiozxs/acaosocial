@@ -17,14 +17,26 @@ class Faixa(models.TextChoices):
 
 
 class Turma(models.Model):
-    nome = models.CharField(max_length=80)
+    class Modalidade(models.TextChoices):
+        JIU = "jiu-jitsu", "Jiu-jitsu"
+        MUAY = "muay-thai", "Muay thai"
+        LUTA = "luta-livre", "Luta livre"
+
+    nome = models.CharField(max_length=80, help_text="Ex.: Jiu-jitsu adulto noite")
+    modalidade = models.CharField(max_length=12, choices=Modalidade.choices, default=Modalidade.JIU)
     publico = models.CharField("Público", max_length=80, help_text="Ex.: Adultos, Jovens, Adolescentes")
     dias = models.CharField(max_length=80, help_text="Ex.: Seg / Qua / Sex")
     horario = models.CharField("Horário", max_length=40, help_text="Ex.: 19h às 20h30")
-    ordem = models.PositiveSmallIntegerField(default=0)
+    ordem = models.PositiveSmallIntegerField(default=0, editable=False)
 
     class Meta:
-        ordering = ["ordem", "nome"]
+        ordering = ["ordem", "id"]
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.ordem:
+            ultimo = Turma.objects.order_by("-ordem").values_list("ordem", flat=True).first() or 0
+            self.ordem = ultimo + 1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.nome} ({self.dias} {self.horario})"
@@ -83,8 +95,8 @@ class Graduacao(models.Model):
 
     class Meta:
         ordering = ["-data", "-id"]
-        verbose_name = "graduação"
-        verbose_name_plural = "graduações"
+        verbose_name = "troca de faixa"
+        verbose_name_plural = "trocas de faixa"
 
     def __str__(self):
         return f"{self.aluno} → {self.get_faixa_display()} {self.grau}º grau"
@@ -157,7 +169,7 @@ class Assinatura(models.Model):
 
     nome = models.CharField("Nome do professor", max_length=120, default="Melino José")
     titulo = models.CharField("Título abaixo do nome", max_length=160,
-                              default="Faixa preta 1º grau de Jiu-Jitsu · Faixa marrom de Luta Livre")
+                              default="Faixa preta 1º grau de Jiu-Jitsu")
     imagem = models.TextField(blank=True, editable=False)  # PNG transparente em base64
 
     class Meta:
@@ -166,3 +178,17 @@ class Assinatura(models.Model):
 
     def __str__(self):
         return self.nome
+
+
+# ---- limpa o cache do painel sempre que algo muda (o painel guarda os números por alguns segundos) ----
+from django.core.cache import cache  # noqa: E402
+from django.db.models.signals import post_delete, post_save  # noqa: E402
+
+
+def _limpa_cache(sender, **kwargs):
+    cache.clear()
+
+
+for _m in (Aluno, Interessado, Doacao, Presenca, Graduacao, Turma):
+    post_save.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_s")
+    post_delete.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_d")

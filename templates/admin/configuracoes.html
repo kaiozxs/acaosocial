@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+{% block content_title %}<h1>Configurações</h1>{% endblock %}
+{% block content %}
+<div class="config">
+  <p class="ajuda-texto">Aqui ficam os ajustes da sua conta e do painel.</p>
+  <div class="config-grade">
+    <a class="config-cartao" href="{% url 'admin:password_change' %}">
+      <i><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></i>
+      <strong>Trocar minha senha</strong>
+      <span>Escolha uma senha nova para a sua conta.</span>
+    </a>
+    <a class="config-cartao" href="{% url 'admin:core_assinatura_changelist' %}">
+      <i><svg viewBox="0 0 24 24"><path d="M3 17c3-6 5-9 6-9s0 6 2 6 3-4 5-4 2 3 5 3"/><path d="M3 21h18"/></svg></i>
+      <strong>Assinatura do professor</strong>
+      <span>A assinatura que sai no certificado. Dá para trocar ou excluir.</span>
+    </a>
+    <a class="config-cartao" href="{% url 'admin:auth_user_changelist' %}">
+      <i><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7"/></svg></i>
+      <strong>Quem acessa o painel</strong>
+      <span>Dar acesso a outra pessoa ou tirar o acesso de alguém.</span>
+    </a>
+    <a class="config-cartao" href="/" target="_blank" rel="noopener">
+      <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></i>
+      <strong>Ver o site</strong>
+      <span>Abrir o site público em outra aba.</span>
+    </a>
+  </div>
+</div>
+{% endblock %}

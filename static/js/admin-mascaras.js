@@ -71,3 +71,9 @@
     if (b) b.setAttribute("placeholder", "Buscar pelo nome ou telefone");
   });
 })();
+
+/* Palavras mais simples nos botões do Django. */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("a.deletelink").forEach(function (a) { a.textContent = "Excluir"; });
+  document.querySelectorAll('input[name="_save"]').forEach(function (i) { i.value = "Salvar"; });
+});

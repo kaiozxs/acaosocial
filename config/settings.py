@@ -94,3 +94,9 @@ INSTAGRAM_CT_URL = os.getenv("INSTAGRAM_CT_URL", "https://www.instagram.com/ct.s
 INSTAGRAM_CT_USUARIO = os.getenv("INSTAGRAM_CT_USUARIO", "@ct.salvacao.sg")
 INSTAGRAM_URL = os.getenv("INSTAGRAM_URL", "https://www.instagram.com/projetosalvacaosg/")
 INSTAGRAM_USUARIO = os.getenv("INSTAGRAM_USUARIO", "@projetosalvacaosg")
+
+# Velocidade: sessão no cookie assinado (sem consulta ao banco) e usuário em cache curto.
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
+AUTHENTICATION_BACKENDS = ["core.auth.UsuarioEmCache"]
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "painel"}}

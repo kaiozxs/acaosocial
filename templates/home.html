@@ -127,7 +127,7 @@
     <div class="pecas">
       {% for t in turmas %}
       <article class="peca {% cycle 'verm' 'pret' 'verm' %} reveal">
-        <small>{{ t.publico }}</small>
+        <small>{{ t.get_modalidade_display }} · {{ t.publico }}</small>
         <strong>{{ t.horario }}</strong>
         <span>{{ t.dias }}</span>
       </article>

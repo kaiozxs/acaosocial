@@ -27,3 +27,14 @@ def filtro_titulo(spec):
     chave = getattr(spec, "lookup_kwarg", "") or getattr(spec, "field_path", "") or ""
     chave = str(chave).split("__")[0]
     return TITULOS.get(chave) or str(spec.title).capitalize()
+
+
+@register.simple_tag
+def versao_arquivo(caminho):
+    """Número que muda quando o arquivo muda: o navegador baixa a versão nova."""
+    from django.conf import settings
+    arq = settings.BASE_DIR / "static" / caminho
+    try:
+        return int(arq.stat().st_mtime)
+    except OSError:
+        return 0
