@@ -125,3 +125,43 @@ class Interessado(models.Model):
 
     def __str__(self):
         return self.nome
+
+
+class Doacao(models.Model):
+    """Doações recebidas (Pix ou outras) para o controle financeiro do projeto."""
+
+    class Forma(models.TextChoices):
+        PIX = "pix", "Pix"
+        DINHEIRO = "dinheiro", "Dinheiro"
+        OUTRA = "outra", "Outra"
+
+    doador = models.CharField(max_length=120, blank=True, help_text="Deixe em branco se for anônimo")
+    valor = models.DecimalField(max_digits=9, decimal_places=2)
+    data = models.DateField(default=date.today)
+    forma = models.CharField(max_length=10, choices=Forma.choices, default=Forma.PIX)
+    observacao = models.CharField("Observação", max_length=200, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-data", "-criado_em"]
+        verbose_name = "doação"
+        verbose_name_plural = "doações"
+
+    def __str__(self):
+        return f"{self.doador or 'Anônimo'} — R$ {self.valor}"
+
+
+class Assinatura(models.Model):
+    """Assinatura do professor usada nos certificados (um único registro)."""
+
+    nome = models.CharField("Nome do professor", max_length=120, default="Melino José")
+    titulo = models.CharField("Título abaixo do nome", max_length=160,
+                              default="Faixa preta 1º grau de Jiu-Jitsu · Faixa marrom de Luta Livre")
+    imagem = models.TextField(blank=True, editable=False)  # PNG transparente em base64
+
+    class Meta:
+        verbose_name = "assinatura do professor"
+        verbose_name_plural = "assinatura do professor"
+
+    def __str__(self):
+        return self.nome

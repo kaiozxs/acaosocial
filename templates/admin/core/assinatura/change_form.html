@@ -1,0 +1,23 @@
+{% extends "admin/change_form.html" %}
+{% block after_field_sets %}
+<fieldset class="module aligned">
+  <h2>Ou assine aqui com o dedo ou o mouse</h2>
+  <div class="form-row">
+    <canvas id="pad" width="600" height="200" style="background:#f6f1e4;border:2px solid #444;max-width:100%;touch-action:none;cursor:crosshair"></canvas>
+    <p><button type="button" id="limpar" class="chamada-todos">Limpar</button> <span style="color:#aaa">Se desenhar aqui, o desenho vale no lugar da foto.</span></p>
+  </div>
+</fieldset>
+{% if original.imagem %}<fieldset class="module aligned"><h2>Assinatura atual</h2><div class="form-row"><img src="{{ original.imagem }}" alt="Assinatura atual" style="background:#f6f1e4;padding:8px;max-width:320px"></div></fieldset>{% endif %}
+<script>
+(function(){
+  var cv=document.getElementById('pad'),ctx=cv.getContext('2d'),des=document.getElementById('id_desenho'),on=false,tem=false;
+  ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#14141e';
+  function p(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height];}
+  cv.addEventListener('pointerdown',function(e){on=true;cv.setPointerCapture(e.pointerId);var q=p(e);ctx.beginPath();ctx.moveTo(q[0],q[1]);});
+  cv.addEventListener('pointermove',function(e){if(!on)return;var q=p(e);ctx.lineTo(q[0],q[1]);ctx.stroke();tem=true;});
+  function fim(){on=false;if(tem)des.value=cv.toDataURL('image/png');}
+  cv.addEventListener('pointerup',fim);cv.addEventListener('pointercancel',fim);
+  document.getElementById('limpar').onclick=function(){ctx.clearRect(0,0,cv.width,cv.height);des.value='';tem=false;};
+})();
+</script>
+{% endblock %}

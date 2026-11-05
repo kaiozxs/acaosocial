@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Início</a> › <a href="{% url 'admin:core_presenca_changelist' %}">Presenças</a> › Chamada rápida</div>{% endblock %}
+{% block content %}
+<form method="get" class="chamada-filtro">
+  <label>Turma
+    <select name="turma" onchange="this.form.submit()">
+      <option value="">Todas</option>
+      {% for t in turmas %}<option value="{{ t.pk }}" {% if t.pk|stringformat:"s" == turma_id %}selected{% endif %}>{{ t.nome }} — {{ t.horario }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Dia <input type="date" name="data" value="{{ dia }}" onchange="this.form.submit()"></label>
+</form>
+<form method="post" class="chamada">
+  {% csrf_token %}
+  <input type="hidden" name="turma" value="{{ turma_id }}"><input type="hidden" name="data" value="{{ dia }}">
+  {% if alunos %}
+  <p class="chamada-topo"><button type="button" class="chamada-todos" onclick="document.querySelectorAll('.chamada input[name=aluno]').forEach(function(c){c.checked=true})">Marcar todos</button></p>
+  <ul class="chamada-lista">
+    {% for a in alunos %}
+    <li><label><input type="checkbox" name="aluno" value="{{ a.pk }}" {% if a.pk in presentes %}checked{% endif %}><span>{{ a.nome }}</span><small>{{ a.get_faixa_display }}</small></label></li>
+    {% endfor %}
+  </ul>
+  <input type="submit" name="salvar" value="Salvar chamada" class="default">
+  {% else %}
+  <p>Nenhum aluno ativo nesta turma. Cadastre alunos em <a href="{% url 'admin:core_aluno_changelist' %}">Alunos</a>.</p>
+  {% endif %}
+</form>
+{% endblock %}

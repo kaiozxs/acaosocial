@@ -41,3 +41,15 @@
 .resumo div { background: #1b1b1b; border: 1px solid #333; border-top: 3px solid #e10a2b; padding: 14px 16px; }
 .resumo b { display: block; font-size: 2.2rem; line-height: 1; color: #fff; }
 .resumo span { color: #aaa; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+
+.btn-zap { display: inline-block; padding: 3px 12px; background: #1f7a3a; color: #fff !important; border-radius: 3px; font-weight: 700; }
+.btn-zap:hover { background: #28a04c; }
+.chamada-filtro { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+.chamada-filtro label { display: grid; gap: 4px; color: #aaa; font-size: .85rem; }
+.chamada-lista { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.chamada-lista label { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #1b1b1b; border: 1px solid #333; cursor: pointer; }
+.chamada-lista label:has(input:checked) { border-color: #e10a2b; background: #2a1015; }
+.chamada-lista input { width: 22px; height: 22px; accent-color: #e10a2b; }
+.chamada-lista span { font-weight: 700; flex: 1; }
+.chamada-lista small { color: #aaa; }
+.chamada-todos { background: #333; color: #fff; border: 0; padding: 8px 14px; cursor: pointer; border-radius: 3px; }

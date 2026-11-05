@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Início</a> › <a href="{% url 'admin:core_aluno_changelist' %}">Alunos</a> › Gerar certificado</div>{% endblock %}
+{% block content %}
+{% if not tem_assinatura %}<p class="aviso-ass">Ainda não há assinatura cadastrada: o certificado sai com a linha em branco para assinar à mão. <a href="{% url 'admin:core_assinatura_changelist' %}">Cadastrar assinatura</a></p>{% endif %}
+<form method="post" class="cert-form" target="_blank">
+  {% csrf_token %}
+  <label>Aluno (opcional)
+    <select name="aluno" id="sel-aluno">
+      <option value="">— digitar o nome —</option>
+      {% for a in alunos %}<option value="{{ a.pk }}" data-nome="{{ a.nome }}" data-faixa="{{ a.faixa }}" data-grau="{{ a.grau }}" {% if aluno and aluno.pk == a.pk %}selected{% endif %}>{{ a.nome }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Nome no certificado <input name="nome" id="f-nome" value="{{ aluno.nome|default:'' }}" required></label>
+  <label>Faixa
+    <select name="faixa" id="f-faixa">{% for k, v in faixas %}<option value="{{ k }}" {% if aluno and aluno.faixa == k %}selected{% endif %}>{{ v }}</option>{% endfor %}</select>
+  </label>
+  <label>Grau (0 a 4) <input type="number" name="grau" id="f-grau" min="0" max="4" value="{{ aluno.grau|default:0 }}"></label>
+  <label>Data da graduação <input type="date" name="data" value="{{ hoje }}" required></label>
+  <input type="submit" value="Gerar PDF" class="default">
+</form>
+<script>
+document.getElementById('sel-aluno').addEventListener('change', function(){
+  var o=this.selectedOptions[0]; if(!o||!o.dataset.nome) return;
+  document.getElementById('f-nome').value=o.dataset.nome;
+  document.getElementById('f-faixa').value=o.dataset.faixa;
+  document.getElementById('f-grau').value=o.dataset.grau;
+});
+</script>
+{% endblock %}
