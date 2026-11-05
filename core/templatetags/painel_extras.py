@@ -16,3 +16,14 @@ def filtro_escolhido(opcoes):
         if o.get("selected") and i > 0:
             return o.get("display", "")
     return ""
+
+
+TITULOS = {"contatado": "Já contatado?", "status": "Situação da matrícula", "turma": "Turma", "faixa": "Faixa", "forma": "Forma"}
+
+
+@register.simple_tag
+def filtro_titulo(spec):
+    """Nome do filtro em linguagem simples."""
+    chave = getattr(spec, "lookup_kwarg", "") or getattr(spec, "field_path", "") or ""
+    chave = str(chave).split("__")[0]
+    return TITULOS.get(chave) or str(spec.title).capitalize()

@@ -51,3 +51,23 @@
     });
   });
 })();
+
+/* Lista em cartões no celular, botões de ação por linha e busca em português. */
+(function () {
+  function cookie(n) { var m = document.cookie.match("(?:^|; )" + n + "=([^;]*)"); return m ? decodeURIComponent(m[1]) : ""; }
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("#result_list").forEach(function (tab) {
+      var rot = Array.prototype.map.call(tab.querySelectorAll("thead th"), function (th) {
+        var t = th.querySelector(".text") || th; return (t.textContent || "").trim();
+      });
+      tab.querySelectorAll("tbody tr").forEach(function (tr) {
+        Array.prototype.forEach.call(tr.children, function (c, i) { if (rot[i]) c.setAttribute("data-label", rot[i]); });
+      });
+    });
+    document.querySelectorAll("form.acao-linha").forEach(function (f) {
+      var i = document.createElement("input"); i.type = "hidden"; i.name = "csrfmiddlewaretoken"; i.value = cookie("csrftoken"); f.appendChild(i);
+    });
+    var b = document.getElementById("searchbar");
+    if (b) b.setAttribute("placeholder", "Buscar pelo nome ou telefone");
+  });
+})();

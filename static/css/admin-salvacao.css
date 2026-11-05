@@ -231,3 +231,84 @@ input[type=file]::file-selector-button { background: var(--ink); color: var(--ca
 .limpar-filtros { font-size: .85rem; font-weight: 600; color: var(--muted); padding: 8px 6px; }
 .limpar-filtros:hover { color: var(--accent); }
 .filtro li a, .filtro li a:hover, .limpar-filtros { text-decoration: none !important; }
+
+/* ---------- botões simples por linha ---------- */
+.acoes-linha { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.acao-linha { margin: 0; display: inline; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; min-height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink) !important; font: 600 .9rem "Inter", sans-serif; cursor: pointer; text-decoration: none !important; white-space: nowrap; transition: background .15s, border-color .15s; }
+.btn:hover { border-color: var(--ink); }
+.btn.btn-zap { background: var(--ok); border-color: var(--ok); color: #fff !important; border-radius: 10px; }
+.btn.ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ok) !important; }
+.btn.perigo { color: var(--accent) !important; border-color: var(--accent); background: transparent; }
+.btn.perigo:hover { background: var(--accent-soft); }
+.pilula { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: .8rem; font-weight: 700; }
+.pilula.novo { background: #fff4d6; color: #8a6200; }
+.pilula.ok { background: var(--ok-soft); color: var(--ok); }
+.actions, .changelist-footer .actions { display: none !important; }
+td.action-checkbox, th.action-checkbox-column { display: none; }
+/* menos opções ao salvar */
+.submit-row input[name="_addanother"], .submit-row input[name="_continue"], .submit-row input[name="_save_as_new"] { display: none; }
+.submit-row input[name="_save"] { min-height: 48px; padding: 12px 28px; font-size: 1rem; }
+.submit-row a.deletelink { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ---------- celular ---------- */
+@media (max-width: 980px) {
+  body { font-size: 16px; }
+  #header { height: 54px; position: sticky; top: 0; z-index: 40; }
+  #user-tools a:not([href*="logout"]):not([href*="password"]) { display: none; }
+  .main > .content { padding: 18px 14px 110px; }
+  .breadcrumbs { display: none !important; }
+  /* menu vira barra fixa embaixo */
+  .sb { position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; height: 68px; z-index: 50; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; gap: 0; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); border-right: 0; border-top: 1px solid var(--side-line); align-items: stretch; scrollbar-width: none; }
+  .sb::-webkit-scrollbar { display: none; }
+  .sb a { flex: 0 0 auto; flex-direction: column; justify-content: center; gap: 4px; min-width: 74px; padding: 6px 8px; margin: 0; font-size: .7rem; text-align: center; border-radius: 12px; line-height: 1.1; }
+  .sb a.ativo { box-shadow: none; background: rgba(200,16,46,.22); }
+  .sb a svg { width: 23px; height: 23px; }
+  .sb-marca, .sb-grupo, .sb-rodape { display: none !important; }
+  #content > h1, #content h1 { font-size: 1.4rem; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 10px; } .stats a { padding: 14px; } .stats b { font-size: 1.6rem; }
+  .atalhos { display: grid; grid-template-columns: 1fr 1fr; } .atalho { padding: 16px 12px; justify-content: center; text-align: center; }
+  .atalho.forte { grid-column: 1 / -1; font-size: 1.05rem; }
+  .duas { grid-template-columns: 1fr; }
+  .object-tools { justify-content: stretch; } .object-tools li { flex: 1; } .object-tools a { display: block; text-align: center; padding: 14px; font-size: .95rem; }
+  .changelist-form-container > div > .filtros-barra { flex: 1 1 100%; justify-content: flex-start; margin: 0 0 12px; }
+  .filtro ul { left: 0; right: auto; }
+  #toolbar #searchbar { max-width: none; }
+  .resumo { grid-template-columns: 1fr 1fr; }
+  .form-row input[type=text], .form-row input[type=email], .form-row select, .form-row textarea { max-width: none; }
+  .submit-row { position: sticky; bottom: 76px; z-index: 20; }
+  .submit-row input[name="_save"] { flex: 1; }
+
+  /* tabelas viram cartões */
+  #result_list thead { display: none; }
+  #result_list, #result_list tbody, #result_list tr { display: block; width: 100%; }
+  #changelist .results { background: transparent; border: 0; box-shadow: none; overflow: visible; }
+  #result_list tr { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin: 0 0 12px; padding: 8px 14px 12px; }
+  #result_list td, #result_list th { display: flex; justify-content: space-between; align-items: center; gap: 14px; border: 0; padding: 7px 0; text-align: right; background: transparent !important; }
+  #result_list td::before, #result_list th::before { content: attr(data-label); color: var(--muted); font-size: .78rem; font-weight: 600; text-align: left; flex: none; }
+  #result_list th.field-nome, #result_list tr > th:first-child { font-size: 1.1rem; font-weight: 800; }
+  #result_list td.field-botoes, #result_list td:last-child:has(.acoes-linha) { display: block; padding-top: 12px; text-align: left; }
+  #result_list td:has(.acoes-linha)::before { display: none; }
+  .acoes-linha { gap: 8px; } .acoes-linha .btn { flex: 1 1 auto; }
+  .chamada-lista { grid-template-columns: 1fr; }
+  .chamada-lista label { padding: 18px 16px; }
+  .chamada-filtro, .cert-form { flex-direction: column; align-items: stretch; }
+  .chamada-filtro select, .chamada-filtro input, .cert-form select, .cert-form input { width: 100%; max-width: none; }
+}
+@media (max-width: 980px) {
+  #header { padding: 0 12px; height: 56px; flex-wrap: nowrap; }
+  #branding { flex: 1; } #header #branding h1 { font-size: 1rem; }
+  #user-tools { font-size: 0; display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+  #user-tools strong { display: none; }
+  #user-tools a, #user-tools button { font-size: .8rem; padding: 8px 8px; }
+  #user-tools form { display: inline; }
+  #changelist .results, #changelist .changelist-form-container { overflow: visible; max-width: 100%; }
+  #result_list tr { box-sizing: border-box; max-width: 100%; }
+  #result_list td, #result_list th { min-width: 0; word-break: break-word; }
+  #changelist-form { overflow: visible; }
+  .changelist-footer { overflow: visible; }
+}
+@media (max-width: 980px) {
+  .resumo { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .resumo div { padding: 10px 10px; } .resumo b { font-size: 1.3rem; } .resumo span { font-size: .68rem; line-height: 1.2; display: block; }
+}

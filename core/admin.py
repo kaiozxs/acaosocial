@@ -21,23 +21,64 @@ COR_FAIXA = {
 }
 
 
+class PainelAdmin(admin.ModelAdmin):
+    """Base do painel: sem menu 'Ação', com botões simples em cada linha."""
+
+    actions = None
+    date_hierarchy = None
+
+    def _url(self, nome, obj):
+        o = self.model._meta
+        return reverse(f"admin:{o.app_label}_{o.model_name}_{nome}", args=[obj.pk])
+
+    def botao_post(self, obj, nome, texto, classe=""):
+        return format_html(
+            '<form method="post" action="{}" class="acao-linha"><button type="submit" class="btn {}">{}</button></form>',
+            self._url(nome, obj), classe, texto)
+
+    def botao_link(self, obj, nome, texto, classe="", params=""):
+        return format_html('<a class="btn {}" href="{}{}">{}</a>', classe, self._url(nome, obj), params, texto)
+
+    def acoes_html(self, *itens):
+        return format_html('<div class="acoes-linha">{}</div>', mark_safe("".join(str(i) for i in itens)))
+
+    def rota_post(self, nome, funcao, mensagem):
+        """Cria uma rota <pk>/<nome>/ que executa `funcao(obj)` e volta para a lista."""
+        o = self.model._meta
+
+        def view(request, pk):
+            obj = self.get_object(request, str(pk))
+            if request.method == "POST" and obj is not None and self.has_change_permission(request, obj):
+                funcao(obj)
+                self.message_user(request, mensagem.format(obj=obj), messages.SUCCESS)
+            return redirect(request.META.get("HTTP_REFERER") or reverse(f"admin:{o.app_label}_{o.model_name}_changelist"))
+
+        return path(f"<int:pk>/{nome}/", self.admin_site.admin_view(view), name=f"{o.app_label}_{o.model_name}_{nome}")
+
+
 class GraduacaoInline(admin.TabularInline):
     model = Graduacao
     extra = 0
 
 
 @admin.register(Aluno)
-class AlunoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "faixa_visual", "idade", "categoria", "turma", "status", "treinos_30d", "inicio", "link_certificado")
+class AlunoAdmin(PainelAdmin):
+    list_display = ("nome", "faixa_visual", "idade", "turma", "status", "botoes")
     list_filter = ("status", "faixa", "turma")
     search_fields = ("nome", "telefone", "responsavel")
-    date_hierarchy = "inicio"
     inlines = [GraduacaoInline]
-    actions = ["dar_grau", "ativar", "trancar"]
     change_list_template = "admin/core/aluno/change_list.html"
 
     def get_urls(self):
-        return [path("certificado/", self.admin_site.admin_view(self.certificado), name="core_aluno_certificado")] + super().get_urls()
+        return [
+            path("certificado/", self.admin_site.admin_view(self.certificado), name="core_aluno_certificado"),
+            self.rota_post("grau", self._mais_um_grau, "{obj} ganhou mais um grau."),
+        ] + super().get_urls()
+
+    @staticmethod
+    def _mais_um_grau(a):
+        if a.grau < 4:
+            Graduacao.objects.create(aluno=a, faixa=a.faixa, grau=a.grau + 1, observacao="Grau pelo painel")
 
     def certificado(self, request):
         """Formulário para gerar o certificado em PDF (nome, faixa, grau e data)."""
@@ -84,31 +125,13 @@ class AlunoAdmin(admin.ModelAdmin):
             COR_FAIXA.get(obj.faixa, "#444"), riscas, obj.get_faixa_display(),
         )
 
-    @admin.display(description="Certificado")
-    def link_certificado(self, obj):
-        return format_html('<a class="btn-zap" style="background:#555" href="{}?aluno={}">Gerar</a>',
-                           reverse("admin:core_aluno_certificado"), obj.pk)
-
-    @admin.display(description="Treinos (30d)")
-    def treinos_30d(self, obj):
-        return obj.presencas.filter(data__gte=date.today() - timedelta(days=30)).count()
-
-    @admin.action(description="Dar +1 grau (listra)")
-    def dar_grau(self, request, queryset):
-        n = 0
-        for a in queryset:
-            if a.grau < 4:
-                Graduacao.objects.create(aluno=a, faixa=a.faixa, grau=a.grau + 1, observacao="Grau pelo painel")
-                n += 1
-        self.message_user(request, f"{n} aluno(s) ganharam grau.", messages.SUCCESS)
-
-    @admin.action(description="Marcar matrícula como ativa")
-    def ativar(self, request, queryset):
-        queryset.update(status=Aluno.Status.ATIVA)
-
-    @admin.action(description="Trancar matrícula")
-    def trancar(self, request, queryset):
-        queryset.update(status=Aluno.Status.TRANCADA)
+    @admin.display(description="O que fazer")
+    def botoes(self, obj):
+        itens = [self.botao_link(obj, "change", "Abrir")]
+        if obj.grau < 4:
+            itens.append(self.botao_post(obj, "grau", "+1 grau"))
+        itens.append(format_html('<a class="btn" href="{}?aluno={}">Certificado</a>', reverse("admin:core_aluno_certificado"), obj.pk))
+        return self.acoes_html(*itens)
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
@@ -121,7 +144,7 @@ class AlunoAdmin(admin.ModelAdmin):
 
 
 @admin.register(Graduacao)
-class GraduacaoAdmin(admin.ModelAdmin):
+class GraduacaoAdmin(PainelAdmin):
     list_display = ("aluno", "faixa", "grau", "data")
     list_filter = ("faixa",)
     search_fields = ("aluno__nome",)
@@ -129,7 +152,7 @@ class GraduacaoAdmin(admin.ModelAdmin):
 
 
 @admin.register(Presenca)
-class PresencaAdmin(admin.ModelAdmin):
+class PresencaAdmin(PainelAdmin):
     list_display = ("aluno", "data")
     list_filter = ("data", "aluno__turma")
     autocomplete_fields = ("aluno",)
@@ -165,30 +188,45 @@ class PresencaAdmin(admin.ModelAdmin):
 
 
 @admin.register(Turma)
-class TurmaAdmin(admin.ModelAdmin):
-    list_display = ("nome", "publico", "dias", "horario", "ordem")
+class TurmaAdmin(PainelAdmin):
+    list_display = ("nome", "publico", "dias", "horario", "botoes")
+
+    @admin.display(description="O que fazer")
+    def botoes(self, obj):
+        return self.acoes_html(self.botao_link(obj, "change", "Abrir"), self.botao_link(obj, "delete", "Excluir", "perigo"))
 
 
 @admin.register(Interessado)
-class InteressadoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "telefone", "idade", "chamar", "contatado", "criado_em")
+class InteressadoAdmin(PainelAdmin):
+    list_display = ("nome", "telefone", "idade", "situacao", "botoes")
     list_filter = ("contatado",)
     search_fields = ("nome", "telefone")
-    list_editable = ("contatado",)
-    actions = ["marcar_contatado"]
 
-    @admin.display(description="WhatsApp")
-    def chamar(self, obj):
+    def get_urls(self):
+        return [self.rota_post("contatado", self._contatado, "{obj} marcado como já contatado.")] + super().get_urls()
+
+    @staticmethod
+    def _contatado(obj):
+        obj.contatado = True
+        obj.save(update_fields=["contatado"])
+
+    @admin.display(description="Situação", ordering="contatado")
+    def situacao(self, obj):
+        if obj.contatado:
+            return mark_safe('<span class="pilula ok">Já contatado</span>')
+        return mark_safe('<span class="pilula novo">Novo</span>')
+
+    @admin.display(description="O que fazer")
+    def botoes(self, obj):
         numero = "".join(c for c in obj.telefone if c.isdigit())
         if len(numero) <= 11:
             numero = "55" + numero
         texto = quote(f"Oi {obj.nome}, aqui é do CT Salvação! Recebemos seu pedido para treinar. Vamos combinar sua aula experimental?")
-        return format_html(
-            '<a class="btn-zap" href="https://wa.me/{}?text={}" target="_blank" rel="noopener">Chamar</a>', numero, texto)
-
-    @admin.action(description="Marcar como já contatado")
-    def marcar_contatado(self, request, queryset):
-        queryset.update(contatado=True)
+        itens = [format_html('<a class="btn btn-zap" href="https://wa.me/{}?text={}" target="_blank" rel="noopener">Chamar no WhatsApp</a>', numero, texto)]
+        if not obj.contatado:
+            itens.append(self.botao_post(obj, "contatado", "Já falei com a pessoa", "ok"))
+        itens.append(self.botao_link(obj, "delete", "Excluir", "perigo"))
+        return self.acoes_html(*itens)
 
 
 def brl(v):
@@ -196,12 +234,15 @@ def brl(v):
 
 
 @admin.register(Doacao)
-class DoacaoAdmin(admin.ModelAdmin):
-    list_display = ("data", "doador_exibido", "valor_fmt", "forma", "observacao")
+class DoacaoAdmin(PainelAdmin):
+    list_display = ("data", "doador_exibido", "valor_fmt", "forma", "botoes")
     list_filter = ("forma", "data")
     search_fields = ("doador", "observacao")
-    date_hierarchy = "data"
     change_list_template = "admin/core/doacao/change_list.html"
+
+    @admin.display(description="O que fazer")
+    def botoes(self, obj):
+        return self.acoes_html(self.botao_link(obj, "change", "Abrir"), self.botao_link(obj, "delete", "Excluir", "perigo"))
 
     @admin.display(description="Doador", ordering="doador")
     def doador_exibido(self, obj):
@@ -234,7 +275,7 @@ class AssinaturaForm(forms.ModelForm):
 
 
 @admin.register(Assinatura)
-class AssinaturaAdmin(admin.ModelAdmin):
+class AssinaturaAdmin(PainelAdmin):
     form = AssinaturaForm
     change_form_template = "admin/core/assinatura/change_form.html"
 
