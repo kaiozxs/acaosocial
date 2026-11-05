@@ -1,0 +1,18 @@
+from django import template
+
+register = template.Library()
+
+
+@register.simple_tag
+def filtro_opcoes(cl, spec):
+    """Opções de um filtro da lista (Todos, Branca, Azul...), para montar o menu suspenso."""
+    return list(spec.choices(cl))
+
+
+@register.simple_tag
+def filtro_escolhido(opcoes):
+    """Texto da opção marcada, ou vazio se estiver em 'Todos'."""
+    for i, o in enumerate(opcoes):
+        if o.get("selected") and i > 0:
+            return o.get("display", "")
+    return ""

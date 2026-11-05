@@ -209,3 +209,25 @@ input[type=file]::file-selector-button { background: var(--ink); color: var(--ca
 .form-row input[type=text], .form-row input[type=email], .form-row input[type=url], .form-row select { width: 100%; max-width: 560px; }
 .form-row input[type=number], .form-row input[type=date] { max-width: 220px; }
 .form-row textarea { width: 100%; max-width: 760px; }
+
+/* filtros em barra, no topo da lista */
+.changelist-form-container > div { display: flex; flex-wrap: wrap; align-items: center; gap: 0 12px; }
+.changelist-form-container > div > #toolbar { flex: 1 1 320px; }
+.changelist-form-container > div > .filtros-barra { flex: 0 0 auto; margin: 0 0 14px auto; }
+.changelist-form-container > div > #changelist-form, .changelist-form-container > div > .xfull { flex: 0 0 100%; min-width: 0; }
+.changelist-form-container > div > .date-hierarchy { flex: 0 0 100%; }
+.filtros-barra { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.filtro { position: relative; }
+.filtro summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 99px; font-weight: 600; font-size: .88rem; color: var(--ink); box-shadow: var(--shadow); user-select: none; }
+.filtro summary::-webkit-details-marker { display: none; }
+.filtro summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .15s; }
+.filtro[open] summary::after { transform: rotate(225deg); }
+.filtro.ativo summary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.filtro summary b { font-weight: 700; }
+.filtro ul { position: absolute; z-index: 30; right: 0; top: calc(100% + 8px); min-width: 210px; max-height: 320px; overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 14px 36px rgba(0,0,0,.28); }
+.filtro li a { display: block; padding: 9px 12px; border-radius: 9px; color: var(--ink); font-weight: 500; font-size: .9rem; }
+.filtro li a:hover { background: var(--accent-soft); color: var(--accent); }
+.filtro li.selected a { background: var(--accent); color: #fff; font-weight: 700; }
+.limpar-filtros { font-size: .85rem; font-weight: 600; color: var(--muted); padding: 8px 6px; }
+.limpar-filtros:hover { color: var(--accent); }
+.filtro li a, .filtro li a:hover, .limpar-filtros { text-decoration: none !important; }

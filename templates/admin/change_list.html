@@ -1,0 +1,30 @@
+{% extends "admin/change_list.html" %}
+{% load painel_extras %}
+{% block filters %}{% endblock %}
+{% block search %}
+{{ block.super }}
+{% if cl.has_filters %}
+<div class="filtros-barra" role="group" aria-label="Filtros">
+  {% for spec in cl.filter_specs %}
+    {% filtro_opcoes cl spec as opcoes %}{% filtro_escolhido opcoes as marcado %}
+    <details class="filtro{% if marcado %} ativo{% endif %}">
+      <summary>{{ spec.title|capfirst }}{% if marcado %}: <b>{{ marcado }}</b>{% endif %}</summary>
+      <ul>
+        {% for o in opcoes %}
+        <li{% if o.selected %} class="selected"{% endif %}><a href="{{ o.query_string|iriencode }}">{{ o.display }}</a></li>
+        {% endfor %}
+      </ul>
+    </details>
+  {% endfor %}
+  {% if cl.has_active_filters %}<a class="limpar-filtros" href="{{ cl.clear_all_filters_qs }}">Limpar filtros</a>{% endif %}
+</div>
+<script>
+document.addEventListener('click', function (e) {
+  document.querySelectorAll('.filtros-barra details[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+});
+document.querySelectorAll('.filtros-barra details').forEach(function (d) {
+  d.addEventListener('toggle', function () { if (d.open) document.querySelectorAll('.filtros-barra details[open]').forEach(function (o) { if (o !== d) o.removeAttribute('open'); }); });
+});
+</script>
+{% endif %}
+{% endblock %}
