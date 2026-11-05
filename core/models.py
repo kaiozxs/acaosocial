@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 
@@ -42,7 +43,7 @@ class Aluno(models.Model):
     foto = models.ImageField(upload_to="alunos/", blank=True)
     turma = models.ForeignKey(Turma, null=True, blank=True, on_delete=models.SET_NULL)
     faixa = models.CharField(max_length=10, choices=Faixa.choices, default=Faixa.BRANCA)
-    grau = models.PositiveSmallIntegerField(default=0, help_text="0 a 4 listras")
+    grau = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(4)], help_text="0 a 4 graus")
     inicio = models.DateField("Início dos treinos", default=date.today)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ATIVA)
     observacoes = models.TextField("Observações", blank=True)
@@ -76,7 +77,7 @@ class Graduacao(models.Model):
 
     aluno = models.ForeignKey(Aluno, related_name="graduacoes", on_delete=models.CASCADE)
     faixa = models.CharField(max_length=10, choices=Faixa.choices)
-    grau = models.PositiveSmallIntegerField(default=0)
+    grau = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(4)], help_text="0 a 4 graus")
     data = models.DateField(default=date.today)
     observacao = models.CharField("Observação", max_length=200, blank=True)
 

@@ -112,9 +112,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .object-tools li { float: none; margin: 0; }
 .object-tools a { background: var(--ink); color: var(--card) !important; border-radius: 10px; padding: 9px 16px; font-weight: 600; font-size: .85rem; }
 .object-tools a:hover { background: var(--accent); color: #fff !important; }
-.messagelist { padding: 0; margin: 0 0 18px; } .messagelist li { border-radius: 12px; padding: 13px 18px; margin: 0 0 8px; font-weight: 500; background-image: none; color: var(--ink); border: 1px solid var(--line); }
-.messagelist li.success { background: var(--ok-soft); border-color: transparent; color: #0a6b49; }
-.messagelist li.error { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
 .errornote, ul.errorlist { border-radius: 10px; }
 
 /* ---------- login ---------- */
@@ -196,3 +193,19 @@ body.login { background: var(--side); display: grid; place-items: center; min-he
 @media (max-width: 980px) { .breadcrumbs { padding: 14px 16px 0 !important; } }
 #changelist-search input[type=submit], #toolbar input[type=submit] { background: var(--ink) !important; color: var(--card) !important; opacity: 1 !important; }
 .sb a, .sb a:visited { color: var(--side-ink); } .sb a.ativo, .sb a:hover { color: #fff; }
+
+/* avisos do Django (sem o ícone repetido) */
+ul.messagelist { padding: 0; margin: 0 0 18px; }
+ul.messagelist li { background-image: none !important; background-repeat: no-repeat; padding: 14px 18px; margin: 0 0 8px; border-radius: 12px; font-size: .93rem; font-weight: 500; border: 1px solid var(--line); color: var(--ink); background-color: var(--card); }
+ul.messagelist li.success { background-color: var(--ok-soft); border-color: transparent; color: #0a6b49; }
+ul.messagelist li.error { background-color: var(--accent-soft); border-color: transparent; color: var(--accent); }
+ul.messagelist li.warning { background-color: #fff4d6; border-color: transparent; color: #7a5b00; }
+ul.messagelist li a { color: inherit; text-decoration: underline; font-weight: 700; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) ul.messagelist li.success { color: #34d399; } :root:not([data-theme="light"]) ul.messagelist li.error { color: #ff8a9c; } :root:not([data-theme="light"]) ul.messagelist li.warning { background-color: #3a2d08; color: #f5d06f; } }
+html[data-theme="dark"] ul.messagelist li.success { color: #34d399; } html[data-theme="dark"] ul.messagelist li.error { color: #ff8a9c; } html[data-theme="dark"] ul.messagelist li.warning { background-color: #3a2d08; color: #f5d06f; }
+/* seletor de arquivo */
+input[type=file] { color: var(--muted); font-size: .88rem; }
+input[type=file]::file-selector-button { background: var(--ink); color: var(--card); border: 0; border-radius: 8px; padding: 8px 14px; margin-right: 10px; font: 600 .85rem "Inter", sans-serif; cursor: pointer; }
+.form-row input[type=text], .form-row input[type=email], .form-row input[type=url], .form-row select { width: 100%; max-width: 560px; }
+.form-row input[type=number], .form-row input[type=date] { max-width: 220px; }
+.form-row textarea { width: 100%; max-width: 760px; }
