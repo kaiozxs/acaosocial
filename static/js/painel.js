@@ -25,6 +25,7 @@
     raiz.classList.remove("carregando", "carregando-lento");
     clearTimeout(timer);
     document.querySelectorAll(".esperando").forEach(function (b) { b.classList.remove("esperando"); });
+    document.querySelectorAll("form[data-enviando]").forEach(function (f) { delete f.dataset.enviando; });
   }
   window.addEventListener("pageshow", paraCarregar);
   document.addEventListener("click", function (e) {
@@ -39,6 +40,8 @@
   document.addEventListener("submit", function (e) {
     var f = e.target;
     if (f.target === "_blank" || e.defaultPrevented) return;
+    if (f.dataset.enviando === "1") { e.preventDefault(); return; }  // já foi enviado: não envia de novo
+    f.dataset.enviando = "1";
     var b = f.querySelector('button[type="submit"], input[type="submit"]');
     if (b) b.classList.add("esperando");
     comecaCarregar();

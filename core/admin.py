@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group, User
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django import forms
+from django.db import models as dj_models
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponse, JsonResponse
@@ -26,6 +27,10 @@ COR_FAIXA = {
     "branca": "#f2f2f2", "cinza": "#9a9a9a", "amarela": "#f4c20d", "laranja": "#f08a24",
     "verde": "#2e9e4f", "azul": "#2457d6", "roxa": "#7a3bc2", "marrom": "#6b3f1d", "preta": "#111",
 }
+
+
+# data com calendário do próprio navegador (clica no campo e abre o calendário)
+DATA_NATIVA = {dj_models.DateField: {"widget": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")}}
 
 
 class PaginadorEmCache(Paginator):
@@ -51,6 +56,7 @@ class PainelAdmin(admin.ModelAdmin):
     date_hierarchy = None
     show_full_result_count = False
     paginator = PaginadorEmCache
+    formfield_overrides = DATA_NATIVA
     ajuda = ""
     texto_novo = ""
 
@@ -110,6 +116,7 @@ class PainelAdmin(admin.ModelAdmin):
 class GraduacaoInline(admin.TabularInline):
     model = Graduacao
     extra = 0
+    formfield_overrides = DATA_NATIVA
 
 
 @admin.register(Aluno)

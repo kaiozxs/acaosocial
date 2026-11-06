@@ -102,6 +102,10 @@ class Graduacao(models.Model):
         return f"{self.aluno} → {self.get_faixa_display()} {self.grau}º grau"
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            igual = Graduacao.objects.filter(aluno_id=self.aluno_id, faixa=self.faixa, grau=self.grau, data=self.data, observacao=self.observacao).first()
+            if igual:  # envio repetido do mesmo formulário: reaproveita o registro
+                self.pk = igual.pk
         super().save(*args, **kwargs)
         # mantém a faixa atual do aluno sincronizada com a graduação mais recente
         ultima = self.aluno.graduacoes.first()
@@ -136,6 +140,16 @@ class Interessado(models.Model):
         ordering = ["-criado_em"]
         verbose_name_plural = "interessados"
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            from datetime import timedelta as _td
+            from django.utils import timezone as _tz
+            recente = Interessado.objects.filter(nome=self.nome, telefone=self.telefone,
+                                                 criado_em__gte=_tz.now() - _td(minutes=2)).first()
+            if recente:  # a pessoa apertou Enviar mais de uma vez
+                self.pk, self.criado_em = recente.pk, recente.criado_em
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.nome
 
@@ -159,6 +173,16 @@ class Doacao(models.Model):
         ordering = ["-data", "-criado_em"]
         verbose_name = "doação"
         verbose_name_plural = "doações"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            from datetime import timedelta as _td
+            from django.utils import timezone as _tz
+            recente = Doacao.objects.filter(doador=self.doador, valor=self.valor, data=self.data, forma=self.forma,
+                                            observacao=self.observacao, criado_em__gte=_tz.now() - _td(seconds=30)).first()
+            if recente:  # clique duplo: não cria outra
+                self.pk, self.criado_em = recente.pk, recente.criado_em
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.doador or 'Anônimo'} — R$ {self.valor}"

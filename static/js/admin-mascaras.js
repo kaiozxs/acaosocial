@@ -77,3 +77,46 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.deletelink").forEach(function (a) { a.textContent = "Excluir"; });
   document.querySelectorAll('input[name="_save"]').forEach(function (i) { i.value = "Salvar"; });
 });
+
+/* Calendário abre ao clicar em qualquer parte do campo de data; textos mais simples nos formulários. */
+document.addEventListener("click", function (e) {
+  var i = e.target;
+  if (i && i.tagName === "INPUT" && i.type === "date" && typeof i.showPicker === "function") { try { i.showPicker(); } catch (err) {} }
+});
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".add-row a").forEach(function (a) {
+    a.textContent = a.textContent.replace("Adicionar outro(a) ", "Adicionar ").replace("Adicionar outro ", "Adicionar ");
+  });
+  document.querySelectorAll(".inline-group h2").forEach(function (h) {
+    if (/faixa/i.test(h.textContent)) h.textContent = "Histórico de faixas";
+  });
+});
+
+/* No celular o teclado não abre sozinho ao entrar na lista. */
+document.addEventListener("DOMContentLoaded", function () {
+  var b = document.getElementById("searchbar");
+  if (b && window.innerWidth < 980) { b.removeAttribute("autofocus"); b.blur(); }
+});
+
+/* Contagem de resultados mais limpa: "2 resultados · Mostrar tudo". */
+document.addEventListener("DOMContentLoaded", function () {
+  var c = document.querySelector("#toolbar span.small, #toolbar .quiet");
+  if (c) c.innerHTML = c.innerHTML.replace(/\(\s*/, "· ").replace(/\s*\)\s*$/, "");
+});
+
+/* Histórico de faixas no celular: cada linha vira um cartão com rótulos; texto do botão de adicionar mais simples. */
+(function () {
+  function arruma() {
+    document.querySelectorAll(".add-row a").forEach(function (a) {
+      a.textContent = a.textContent.replace("Adicionar outro(a) ", "Adicionar ").replace("Adicionar outro ", "Adicionar ");
+    });
+    document.querySelectorAll(".inline-group .tabular table").forEach(function (t) {
+      var rot = Array.prototype.map.call(t.querySelectorAll("thead th"), function (th) { return (th.textContent || "").trim().replace(/\*$/, ""); });
+      t.querySelectorAll("tbody tr").forEach(function (tr) {
+        Array.prototype.forEach.call(tr.children, function (c, i) { if (rot[i] && !c.getAttribute("data-label")) c.setAttribute("data-label", rot[i]); });
+      });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function () { arruma(); setTimeout(arruma, 400); });
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest(".add-row")) setTimeout(arruma, 50); });
+})();
