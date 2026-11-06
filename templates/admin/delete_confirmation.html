@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load admin_urls %}
+{% block content_title %}{% endblock %}
+{% block content %}
+<div class="excluir-cartao">
+  <div class="excluir-icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/></svg></div>
+  {% if perms_lacking or protected %}
+    <h1>Não dá para excluir</h1>
+    {% if perms_lacking %}<p class="excluir-texto">Você não tem permissão para apagar este item.</p>{% endif %}
+    {% if protected %}
+      <p class="excluir-texto">Este item está ligado a outros registros e precisa ficar:</p>
+      <ul class="excluir-lista">{% for obj in protected %}<li>{{ obj }}</li>{% endfor %}</ul>
+    {% endif %}
+    <div class="excluir-botoes"><a class="btn cancel-link" href="{% url opts|admin_urlname:'changelist' %}">Voltar</a></div>
+  {% else %}
+    <h1>Excluir “{{ object }}”?</h1>
+    <p class="excluir-texto">Isso apaga de vez e não dá para desfazer.</p>
+    {% if model_count %}
+    <div class="excluir-ligados">
+      <span>Também vai apagar:</span>
+      {% for name, count in model_count.items %}{% if name|lower != opts.verbose_name_plural|lower %}<b>{{ count }} {{ name|lower }}</b>{% endif %}{% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" class="excluir-form">{% csrf_token %}
+      <input type="hidden" name="post" value="yes">
+      {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+      {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+      <div class="excluir-botoes">
+        <a class="btn cancel-link" href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}">Cancelar</a>
+        <button type="submit" class="btn-perigo">Sim, excluir</button>
+      </div>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

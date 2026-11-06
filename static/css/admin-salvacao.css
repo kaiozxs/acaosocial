@@ -848,3 +848,23 @@ form .aligned ul li, .form-row ul li { font-size: max(.8rem, 12px); }
 /* "Mostrar tudo": área de toque maior sem inflar a pílula */
 #toolbar span.small a, #toolbar .quiet a { position: relative; }
 #toolbar span.small a::after, #toolbar .quiet a::after { content: ""; position: absolute; inset: -14px -10px; }
+
+/* ---------- tela de confirmar exclusão ---------- */
+.excluir-cartao { max-width: 520px; margin: 32px auto; padding: 36px 32px 30px; text-align: center; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(180deg, var(--card-2), var(--card)); box-shadow: var(--shadow); }
+.excluir-icone { width: 68px; height: 68px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); box-shadow: 0 0 0 8px rgba(225,29,63,.07); color: var(--accent-hi); }
+.excluir-icone svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.excluir-cartao h1 { font-size: 1.45rem !important; line-height: 1.25; margin: 0 0 10px !important; text-transform: none; }
+.excluir-texto { margin: 0 0 18px; color: var(--muted); font-size: .98rem; line-height: 1.5; }
+.excluir-ligados { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin: 0 0 22px; padding: 14px; border-radius: 14px; background: var(--card); border: 1px dashed var(--line); }
+.excluir-ligados span { width: 100%; color: var(--muted); font-size: .86rem; }
+.excluir-ligados b { padding: 6px 14px; border-radius: 99px; background: var(--accent-soft); color: var(--accent-hi); font-size: .86rem; font-weight: 700; }
+.excluir-lista { list-style: none; margin: 0 0 20px; padding: 0; display: grid; gap: 6px; }
+.excluir-lista li { padding: 10px 14px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font-size: .92rem; }
+.excluir-form { margin: 0; }
+.excluir-botoes { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
+.excluir-botoes .btn { min-height: 48px; padding: 0 26px; font-size: .95rem; }
+.btn-perigo { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 28px; border: 0; border-radius: 12px; background: linear-gradient(135deg, #ff3b5c, #c8102e); color: #fff !important; font: 700 .95rem "Inter", sans-serif; cursor: pointer; box-shadow: 0 8px 22px rgba(225,29,63,.32); box-sizing: border-box; }
+.btn-perigo:hover { filter: brightness(1.08); }
+html.em-modal .excluir-cartao { margin: 8px auto; box-shadow: none; border: 0; background: transparent; padding: 24px 8px; }
+@media (max-width: 600px) { .excluir-cartao { padding: 28px 18px 22px; margin: 12px auto; } .excluir-botoes { flex-direction: column-reverse; } .excluir-botoes .btn, .btn-perigo { width: 100%; } }
+.excluir-ligados:not(:has(b)) { display: none; }
