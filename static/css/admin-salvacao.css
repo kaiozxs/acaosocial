@@ -733,3 +733,11 @@ html[data-theme="light"] #toolbar #searchbar { border-color: #d3d9e5 !important;
   .inline-group .tabular td.delete::before { content: "Excluir"; }
   .inline-group .tabular tr.add-row td::before { display: none; }
 }
+
+.inline-group .tabular tr.empty-form, .inline-group tr.empty-form { display: none !important; }
+@media (max-width: 980px) {
+  .inline-group .tabular { overflow-x: hidden; }
+  .inline-group .tabular td input, .inline-group .tabular td select { width: auto !important; flex: 1 1 0 !important; min-width: 0 !important; max-width: 100% !important; }
+  .inline-group .tabular td input[type=checkbox] { flex: 0 0 auto !important; }
+  .inline-group .tabular td::before { flex: 0 0 82px; }
+}
