@@ -837,3 +837,14 @@ form .aligned ul li, .form-row ul li { font-size: max(.8rem, 12px); }
   #user-tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .filtros-barra { scroll-margin-top: 70px; }
 }
+
+/* altura certa: padding e borda entram na medida (antes os links com min-height ficavam ~18px mais altos que os botões) */
+#user-tools .topo-link, .hero-link, .voltar, .historylink, .btn, .btn-novo, .btn-principal, .limpar-filtros, #toolbar span.small a, #toolbar .quiet a, .ver-todos, .dia-seta, details.pontos summary, .filtro summary, .cert-linha, .topo-marca, .atalho, .config-cartao, .turma-cartao, .acoes-redondas a, .related-widget-wrapper-link, .caixinha-x, .tema-btn, .sb a, #result_list td a, #result_list th a { box-sizing: border-box; }
+
+/* contagem de resultados: uma pílula só, sem inflar */
+#toolbar span.small, #toolbar .quiet { min-height: 40px; padding: 0 14px !important; box-sizing: border-box; }
+#toolbar span.small a, #toolbar .quiet a { min-height: 0 !important; padding: 0 2px !important; }
+
+/* "Mostrar tudo": área de toque maior sem inflar a pílula */
+#toolbar span.small a, #toolbar .quiet a { position: relative; }
+#toolbar span.small a::after, #toolbar .quiet a::after { content: ""; position: absolute; inset: -14px -10px; }

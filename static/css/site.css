@@ -230,3 +230,4 @@ footer a { display: inline-block; padding: 10px 2px; }
 .topo-nome { display: inline-flex; align-items: center; min-height: 44px; }
 .topo nav a { display: inline-flex; align-items: center; min-height: 40px; padding-left: .35rem; padding-right: .35rem; }
 .topo nav a:last-child { padding-left: .8rem; padding-right: .8rem; }
+.topo nav a, .topo-nome, .contato, footer a { box-sizing: border-box; }

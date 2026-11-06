@@ -196,14 +196,14 @@ class AlunoAdmin(PainelAdmin):
 @admin.register(Graduacao)
 class GraduacaoAdmin(PainelAdmin):
     texto_novo = "Registrar troca de faixa"
-    list_display = ("aluno", "faixa", "grau", "data", "botoes")
+    list_display = ("aluno", "faixa", "grau", "data", "menu")
     list_select_related = ("aluno",)
     ajuda = ("Cada vez que um aluno troca de faixa ou ganha um grau, registre aqui. "
              "A faixa do aluno é atualizada sozinha e o histórico fica guardado. Clique em Adicionar troca de faixa.")
 
-    @admin.display(description="O que fazer")
-    def botoes(self, obj):
-        return self.acoes_html(self.botao_link(obj, "change", "Abrir"), self.botao_link(obj, "delete", "Excluir", "perigo"))
+    @admin.display(description="")
+    def menu(self, obj):
+        return self.menu_pontos(self.item_link(obj, "change", "Editar"), self.item_link(obj, "delete", "Excluir", True))
     list_filter = ("faixa",)
     search_fields = ("aluno__nome",)
     autocomplete_fields = ("aluno",)
@@ -269,14 +269,14 @@ class PresencaAdmin(PainelAdmin):
 @admin.register(Turma)
 class TurmaAdmin(PainelAdmin):
     texto_novo = "Nova turma"
-    list_display = ("nome", "modalidade", "publico", "dias", "horario", "botoes")
+    list_display = ("nome", "modalidade", "publico", "dias", "horario", "menu")
     fields = ("nome", "modalidade", "publico", "dias", "horario")
     ajuda = ("Turma é um grupo de treino com dia e horário fixos, por exemplo: Jiu-jitsu adulto, seg, qua e sex, 19h às 20h30. "
              "As turmas aparecem no site em Horários de treino e são usadas na chamada. Cadastre uma turma para cada horário.")
 
-    @admin.display(description="O que fazer")
-    def botoes(self, obj):
-        return self.acoes_html(self.botao_link(obj, "change", "Abrir"), self.botao_link(obj, "delete", "Excluir", "perigo"))
+    @admin.display(description="")
+    def menu(self, obj):
+        return self.menu_pontos(self.item_link(obj, "change", "Editar"), self.item_link(obj, "delete", "Excluir", True))
 
 
 @admin.register(Interessado)
@@ -327,14 +327,14 @@ def brl(v):
 class DoacaoAdmin(PainelAdmin):
     texto_novo = "Registrar doação"
     ajuda = "Anote aqui cada doação recebida (Pix, dinheiro ou outra). O painel soma o total do mês e do ano."
-    list_display = ("data", "doador_exibido", "valor_fmt", "forma", "botoes")
+    list_display = ("data", "doador_exibido", "valor_fmt", "forma", "menu")
     list_filter = ("forma", "data")
     search_fields = ("doador", "observacao")
     change_list_template = "admin/core/doacao/change_list.html"
 
-    @admin.display(description="O que fazer")
-    def botoes(self, obj):
-        return self.acoes_html(self.botao_link(obj, "change", "Abrir"), self.botao_link(obj, "delete", "Excluir", "perigo"))
+    @admin.display(description="")
+    def menu(self, obj):
+        return self.menu_pontos(self.item_link(obj, "change", "Editar"), self.item_link(obj, "delete", "Excluir", True))
 
     @admin.display(description="Doador", ordering="doador")
     def doador_exibido(self, obj):
@@ -489,7 +489,7 @@ admin.site.unregister(User)
 @admin.register(User)
 class UsuarioAdmin(PainelAdmin, UserAdmin):
     texto_novo = "Adicionar usuário"
-    list_display = ("username", "first_name", "ativo", "botoes")
+    list_display = ("username", "first_name", "ativo", "menu")
     list_filter = ()
     search_fields = ("username", "first_name", "email")
     ajuda = ("Pessoas que podem entrar no painel. Para trocar a sua própria senha vá em Configurações. "
@@ -504,12 +504,12 @@ class UsuarioAdmin(PainelAdmin, UserAdmin):
     def ativo(self, obj):
         return obj.is_active
 
-    @admin.display(description="O que fazer")
-    def botoes(self, obj):
-        itens = [self.botao_link(obj, "change", "Abrir")]
+    @admin.display(description="")
+    def menu(self, obj):
+        itens = [self.item_link(obj, "change", "Editar")]
         if not obj.is_superuser:
-            itens.append(self.botao_link(obj, "delete", "Excluir", "perigo"))
-        return self.acoes_html(*itens)
+            itens.append(self.item_link(obj, "delete", "Excluir", True))
+        return self.menu_pontos(*itens)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
