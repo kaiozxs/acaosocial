@@ -126,6 +126,7 @@ class AlunoAdmin(PainelAdmin):
     list_filter = ("status", "faixa", "turma")
     search_fields = ("nome", "telefone", "responsavel")
     inlines = [GraduacaoInline]
+    exclude = ("foto",)  # a Vercel não guarda arquivos enviados; a foto volta quando houver armazenamento (Supabase Storage)
     list_select_related = ("turma",)
     ajuda = "Aqui ficam todos os alunos. Toque nos três pontinhos para editar as informações ou excluir. Para tirar um certificado, use o menu Certificados."
     change_list_template = "admin/core/aluno/change_list.html"

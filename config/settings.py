@@ -8,9 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-insegura-troque-em-producao")
-DEBUG = os.getenv("DEBUG", "1") == "1"
+NA_VERCEL = bool(os.getenv("VERCEL"))
+DEBUG = os.getenv("DEBUG", "0" if NA_VERCEL else "1") == "1"  # na Vercel o padrão é desligado
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
-CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("CSRF_TRUSTED_ORIGINS", "https://*.vercel.app").split(",") if o]
 
 INSTALLED_APPS = [
     "core",
@@ -102,3 +103,11 @@ AUTHENTICATION_BACKENDS = ["core.auth.UsuarioEmCache"]
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "painel"}}
 
 X_FRAME_OPTIONS = "SAMEORIGIN"  # permite abrir os formulários em caixinha (iframe do próprio site)
+
+# Segurança em produção (quando DEBUG está desligado): cookies só por HTTPS e confia no aviso do proxy da Vercel.
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = "same-origin"

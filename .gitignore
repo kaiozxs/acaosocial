@@ -7,3 +7,6 @@ media/
 staticfiles/
 .vercel/
 node_modules/
+
+package.json
+package-lock.json
