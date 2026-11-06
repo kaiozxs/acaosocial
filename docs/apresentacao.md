@@ -2,6 +2,8 @@
 
 Tempo sugerido: **8 a 10 minutos** (6 de demonstração).
 
+Slides prontos: [apresentacao-projeto-salvacao.pptx](apresentacao-projeto-salvacao.pptx) (10 slides; as anotações de cada slide ficam no campo de notas do PowerPoint).
+
 ## Antes de começar (checklist)
 - [ ] Site publicado abrindo no celular e no computador.
 - [ ] Painel aberto e **logado** em outra aba (para não gastar tempo com senha).
