@@ -37,27 +37,21 @@
   <div class="sb-grupo">Dia a dia</div>
   <a href="{{ u_chamada }}" class="{% if request.path == u_chamada %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg><em>Chamada</em></a>
   <a href="{{ u_alunos }}" class="{% if u_alunos in request.path and 'certificado' not in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7"/><path d="M18 14.2a6.5 6.5 0 013.5 5.8"/></svg><em>Alunos</em></a>
-  <a class="sb-add" href="{% url 'admin:core_aluno_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Novo aluno</em></a>
   <a href="{{ u_inter }}" class="{% if u_inter in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.7 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg><em>Interessados</em></a>
   <a href="{{ u_cert }}" class="{% if 'certificado' in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/></svg><em>Certificados</em></a>
 
   <div class="sb-grupo">Dinheiro</div>
   <a href="{{ u_doa }}" class="{% if u_doa in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 00-7.1 0L12 7.3l-1.7-1.7a5 5 0 10-7.1 7.1L12 21.5l8.8-8.8a5 5 0 000-7.1z"/></svg><em>Doações</em></a>
-  <a class="sb-add" href="{% url 'admin:core_doacao_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Registrar doação</em></a>
 
   <div class="sb-grupo">Cadastros</div>
   <a href="{{ u_turmas }}" class="{% if u_turmas in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><em>Turmas</em></a>
-  <a class="sb-add" href="{% url 'admin:core_turma_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Nova turma</em></a>
   <a href="{{ u_grad }}" class="{% if u_grad in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 8h18v8H3z"/><path d="M16 8v8"/></svg><em>Trocas de faixa</em></a>
-  <a class="sb-add" href="{% url 'admin:core_graduacao_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Registrar troca de faixa</em></a>
   <a href="{{ u_pres }}" class="{% if u_pres in request.path and 'chamada' not in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg><em>Histórico de presenças</em></a>
-  <a class="sb-add" href="{% url 'admin:core_presenca_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Adicionar presença</em></a>
 
   <div class="sb-grupo">Conta</div>
   <a href="{{ u_conf }}" class="{% if '/configuracoes' in request.path or '/assinatura' in request.path or '/auth/' in request.path or 'password_change' in request.path %}ativo{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg><em>Configurações</em></a>
   <a class="sb-sub" href="{% url 'admin:password_change' %}"><em>Trocar minha senha</em></a>
   <a class="sb-sub" href="{% url 'admin:core_assinatura_changelist' %}"><em>Assinatura do professor</em></a>
   <a class="sb-sub" href="{% url 'admin:auth_user_changelist' %}"><em>Quem acessa o painel</em></a>
-  <a class="sb-add" href="{% url 'admin:auth_user_add' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><em>Adicionar usuário</em></a>
 </nav>
 {% endblock %}

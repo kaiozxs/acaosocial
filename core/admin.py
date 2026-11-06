@@ -52,10 +52,12 @@ class PainelAdmin(admin.ModelAdmin):
     show_full_result_count = False
     paginator = PaginadorEmCache
     ajuda = ""
+    texto_novo = ""
 
     def changelist_view(self, request, extra_context=None):
         extra_context = dict(extra_context or {})
         extra_context.setdefault("ajuda", self.ajuda)
+        extra_context.setdefault("texto_novo", self.texto_novo or f"Adicionar {self.model._meta.verbose_name}")
         return super().changelist_view(request, extra_context)
 
     def _url(self, nome, obj):
@@ -112,6 +114,7 @@ class GraduacaoInline(admin.TabularInline):
 
 @admin.register(Aluno)
 class AlunoAdmin(PainelAdmin):
+    texto_novo = "Novo aluno"
     list_display = ("nome", "faixa_visual", "idade", "turma", "situacao", "menu")
     list_filter = ("status", "faixa", "turma")
     search_fields = ("nome", "telefone", "responsavel")
@@ -185,6 +188,7 @@ class AlunoAdmin(PainelAdmin):
 
 @admin.register(Graduacao)
 class GraduacaoAdmin(PainelAdmin):
+    texto_novo = "Registrar troca de faixa"
     list_display = ("aluno", "faixa", "grau", "data", "botoes")
     list_select_related = ("aluno",)
     ajuda = ("Cada vez que um aluno troca de faixa ou ganha um grau, registre aqui. "
@@ -200,6 +204,7 @@ class GraduacaoAdmin(PainelAdmin):
 
 @admin.register(Presenca)
 class PresencaAdmin(PainelAdmin):
+    texto_novo = "Adicionar presença"
     list_display = ("aluno", "data")
     list_filter = ("data", "aluno__turma")
     list_select_related = ("aluno",)
@@ -256,6 +261,7 @@ class PresencaAdmin(PainelAdmin):
 
 @admin.register(Turma)
 class TurmaAdmin(PainelAdmin):
+    texto_novo = "Nova turma"
     list_display = ("nome", "modalidade", "publico", "dias", "horario", "botoes")
     fields = ("nome", "modalidade", "publico", "dias", "horario")
     ajuda = ("Turma é um grupo de treino com dia e horário fixos, por exemplo: Jiu-jitsu adulto, seg, qua e sex, 19h às 20h30. "
@@ -268,6 +274,7 @@ class TurmaAdmin(PainelAdmin):
 
 @admin.register(Interessado)
 class InteressadoAdmin(PainelAdmin):
+    texto_novo = "Adicionar interessado"
     ajuda = "Pessoas que preencheram a ficha Quero treinar no site. Toque em WhatsApp para chamar: ao chamar, a pessoa já fica marcada como contatada."
     list_display = ("nome", "telefone", "idade", "situacao", "botoes")
     list_filter = ("contatado",)
@@ -311,6 +318,7 @@ def brl(v):
 
 @admin.register(Doacao)
 class DoacaoAdmin(PainelAdmin):
+    texto_novo = "Registrar doação"
     ajuda = "Anote aqui cada doação recebida (Pix, dinheiro ou outra). O painel soma o total do mês e do ano."
     list_display = ("data", "doador_exibido", "valor_fmt", "forma", "botoes")
     list_filter = ("forma", "data")
@@ -473,6 +481,7 @@ admin.site.unregister(User)
 
 @admin.register(User)
 class UsuarioAdmin(PainelAdmin, UserAdmin):
+    texto_novo = "Adicionar usuário"
     list_display = ("username", "first_name", "ativo", "botoes")
     list_filter = ()
     search_fields = ("username", "first_name", "email")
