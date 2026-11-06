@@ -15,7 +15,7 @@
       <span class="cert-nome">{{ a.nome }}</span>
       <span class="aluno-meta">
         {% if a.turma %}<span class="modalidade {{ a.turma.modalidade }}">{{ a.turma.get_modalidade_display }}</span>{% endif %}
-        <span class="faixa-chip"><span class="cinto {% if a.faixa == 'preta' %}preta{% endif %}" style="--cor: {{ a.faixa|cor_faixa }}"><i class="cinto-barra">{{ a.grau|listras }}</i></span><em>{{ a.get_faixa_display }}</em></span>
+        <span class="faixa-chip"><span class="cinto {{ a.faixa|cinto_classe }}" style="--cor: {{ a.faixa|cor_faixa }}"><i class="cinto-barra">{{ a.grau|listras }}</i></span><em>{{ a.get_faixa_display }}</em></span>
       </span>
       <span class="cert-ir">Gerar certificado</span>
     </button>

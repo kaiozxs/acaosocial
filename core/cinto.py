@@ -39,11 +39,16 @@ def _tecido(w, h):
     return tex.filter(ImageFilter.GaussianBlur(0.6))
 
 
-def _faixa_base(cor, w=W, h=H):
+def _faixa_base(cor, w=W, h=H, listra=""):
     base = _gradiente_vertical(w, h, cor)
     tex = _tecido(w, h)
     base = ImageChops.multiply(base, Image.merge("RGB", (tex, tex, tex)).point(lambda v: 205 + int((v - 128) * .45)))
     base = base.point(lambda v: min(255, int(v * 1.18)))
+    if listra:  # faixa infantil: listra no meio, de ponta a ponta
+        cor_l = (246, 246, 244) if listra == "branca" else (14, 14, 16)
+        topo, alt = int(h * 0.34), int(h * 0.32)
+        faixa_l = _gradiente_vertical(w, alt, cor_l)
+        base.paste(faixa_l, (0, topo))
     d = ImageDraw.Draw(base)
     escuro = _tom(cor, .62) if sum(cor) > 120 else (60, 60, 64)
     claro = _tom(cor, 1.35) if sum(cor) > 120 else (74, 74, 78)
@@ -75,9 +80,11 @@ def _barra(cor_barra, grau, h=H):
 
 @lru_cache(maxsize=64)
 def faixa_png(chave, grau):
-    cor = CORES.get(chave, (90, 90, 90))
-    cor_barra = (200, 16, 46) if chave == "preta" else (14, 14, 16)
-    base = _faixa_base(cor)
+    partes = chave.split("-")
+    cor = CORES.get(partes[0], (90, 90, 90))
+    listra = partes[1] if len(partes) > 1 else ""
+    cor_barra = (200, 16, 46) if partes[0] == "preta" else (14, 14, 16)
+    base = _faixa_base(cor, listra=listra)
     barra = _barra(cor_barra, grau)
     x_barra = int(W * 0.70)
     base.paste(barra, (x_barra, 0))

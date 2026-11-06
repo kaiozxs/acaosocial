@@ -48,7 +48,7 @@
           <strong>{{ l.aluno.nome }}</strong>
           <span class="aluno-meta">
             {% if l.aluno.turma %}<span class="modalidade {{ l.aluno.turma.modalidade }}">{{ l.aluno.turma.get_modalidade_display }}</span>{% endif %}
-            <span class="faixa-chip"><span class="cinto {% if l.aluno.faixa == 'preta' %}preta{% endif %}" style="--cor: {{ l.aluno.faixa|cor_faixa }}"><i class="cinto-barra">{{ l.aluno.grau|listras }}</i></span><em>{{ l.aluno.get_faixa_display }}</em></span>
+            <span class="faixa-chip"><span class="cinto {{ l.aluno.faixa|cinto_classe }}" style="--cor: {{ l.aluno.faixa|cor_faixa }}"><i class="cinto-barra">{{ l.aluno.grau|listras }}</i></span><em>{{ l.aluno.get_faixa_display }}</em></span>
           </span>
           <span class="freq">
             {% if l.pct is None %}<small class="muted">Sem aulas registradas em {{ mes }}</small>

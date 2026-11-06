@@ -7,6 +7,7 @@ Responsável: professor **Melino José** (faixa preta 1º grau de jiu-jitsu, fai
 - **Site público** (`/`): projeto, turmas e horários, professor, doação via Pix e formulário "quero treinar".
 - **Painel do professor** (`/admin`): cadastro de alunos, matrícula (ativa/trancada/cancelada), faixa e grau, histórico de graduações, presenças, interessados vindos do site. Ação em lote "+1 grau".
 - Busca por nome/telefone e filtros por status, faixa e turma.
+- Faixas do jiu-jitsu: branca; infantis cinza, amarela, laranja e verde (cada uma com listra branca, lisa e com listra preta); e adultas azul, roxa, marrom e preta, com 0 a 4 graus.
 
 ## Contato
 - Localização: bairro Coelho

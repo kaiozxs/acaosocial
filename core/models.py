@@ -5,15 +5,37 @@ from django.db import models
 
 
 class Faixa(models.TextChoices):
+    """Faixas do jiu-jitsu. As infantis (cinza, amarela, laranja e verde) têm três etapas:
+    com listra branca, lisa e com listra preta. Depois vem a faixa de adulto."""
+
     BRANCA = "branca", "Branca"
+    CINZA_BRANCA = "cinza-branca", "Cinza e branca (kids)"
     CINZA = "cinza", "Cinza (kids)"
+    CINZA_PRETA = "cinza-preta", "Cinza e preta (kids)"
+    AMARELA_BRANCA = "amarela-branca", "Amarela e branca (kids)"
     AMARELA = "amarela", "Amarela (kids)"
+    AMARELA_PRETA = "amarela-preta", "Amarela e preta (kids)"
+    LARANJA_BRANCA = "laranja-branca", "Laranja e branca (kids)"
     LARANJA = "laranja", "Laranja (kids)"
+    LARANJA_PRETA = "laranja-preta", "Laranja e preta (kids)"
+    VERDE_BRANCA = "verde-branca", "Verde e branca (kids)"
     VERDE = "verde", "Verde (kids)"
+    VERDE_PRETA = "verde-preta", "Verde e preta (kids)"
     AZUL = "azul", "Azul"
     ROXA = "roxa", "Roxa"
     MARROM = "marrom", "Marrom"
     PRETA = "preta", "Preta"
+
+
+def faixa_base(chave):
+    """Cor principal da faixa: 'amarela-preta' -> 'amarela'."""
+    return (chave or "").split("-")[0]
+
+
+def faixa_listra(chave):
+    """Listra do meio da faixa infantil: 'branca', 'preta' ou '' (faixa lisa)."""
+    partes = (chave or "").split("-")
+    return partes[1] if len(partes) > 1 else ""
 
 
 class Turma(models.Model):
@@ -54,7 +76,7 @@ class Aluno(models.Model):
     responsavel = models.CharField("Responsável", max_length=120, blank=True, help_text="Obrigatório para menores")
     foto = models.ImageField(upload_to="alunos/", blank=True)
     turma = models.ForeignKey(Turma, null=True, blank=True, on_delete=models.SET_NULL)
-    faixa = models.CharField(max_length=10, choices=Faixa.choices, default=Faixa.BRANCA)
+    faixa = models.CharField(max_length=20, choices=Faixa.choices, default=Faixa.BRANCA)
     grau = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(4)], help_text="0 a 4 graus")
     inicio = models.DateField("Início dos treinos", default=date.today)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ATIVA)
@@ -88,7 +110,7 @@ class Graduacao(models.Model):
     """Histórico de trocas de faixa/grau: ajuda o professor a saber quem está perto de graduar."""
 
     aluno = models.ForeignKey(Aluno, related_name="graduacoes", on_delete=models.CASCADE)
-    faixa = models.CharField(max_length=10, choices=Faixa.choices)
+    faixa = models.CharField(max_length=20, choices=Faixa.choices)
     grau = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(4)], help_text="0 a 4 graus")
     data = models.DateField(default=date.today)
     observacao = models.CharField("Observação", max_length=200, blank=True)

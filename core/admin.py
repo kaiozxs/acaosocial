@@ -21,7 +21,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Faixa, Aluno, Assinatura, Doacao, Graduacao, Interessado, Presenca, Turma
+from .models import Faixa, faixa_base, faixa_listra, Aluno, Assinatura, Doacao, Graduacao, Interessado, Presenca, Turma
 
 COR_FAIXA = {
     "branca": "#f2f2f2", "cinza": "#9a9a9a", "amarela": "#f4c20d", "laranja": "#f08a24",
@@ -169,7 +169,8 @@ class AlunoAdmin(PainelAdmin):
         return format_html(
             '<span class="faixa-chip"><span class="cinto {}" style="--cor:{}">'
             '<i class="cinto-barra">{}</i></span><em>{}</em></span>',
-            "preta" if obj.faixa == "preta" else "", COR_FAIXA.get(obj.faixa, "#444"), barras, obj.get_faixa_display().split(" (")[0])
+            ("preta " if faixa_base(obj.faixa) == "preta" else "") + (f"listra-{faixa_listra(obj.faixa)}" if faixa_listra(obj.faixa) else ""),
+            COR_FAIXA.get(faixa_base(obj.faixa), "#444"), barras, obj.get_faixa_display().split(" (")[0])
 
     @admin.display(description="Situação", ordering="status")
     def situacao(self, obj):

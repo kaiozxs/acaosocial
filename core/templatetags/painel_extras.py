@@ -48,7 +48,20 @@ CORES_FAIXA = {
 
 @register.filter
 def cor_faixa(faixa):
-    return CORES_FAIXA.get(faixa, "#555")
+    """Cor principal da faixa (a das faixas infantis com listra é a da base)."""
+    return CORES_FAIXA.get(str(faixa).split("-")[0], "#555")
+
+
+@register.filter
+def cinto_classe(faixa):
+    """Classes do desenho da faixa: barra vermelha na preta; listra branca ou preta nas infantis."""
+    partes = str(faixa).split("-")
+    classes = []
+    if partes[0] == "preta":
+        classes.append("preta")
+    if len(partes) > 1:
+        classes.append("listra-" + partes[1])
+    return " ".join(classes)
 
 
 @register.filter

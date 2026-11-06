@@ -868,3 +868,9 @@ form .aligned ul li, .form-row ul li { font-size: max(.8rem, 12px); }
 html.em-modal .excluir-cartao { margin: 8px auto; box-shadow: none; border: 0; background: transparent; padding: 24px 8px; }
 @media (max-width: 600px) { .excluir-cartao { padding: 28px 18px 22px; margin: 12px auto; } .excluir-botoes { flex-direction: column-reverse; } .excluir-botoes .btn, .btn-perigo { width: 100%; } }
 .excluir-ligados:not(:has(b)) { display: none; }
+
+/* faixas infantis: listra branca ou preta no meio da faixa */
+.cinto.listra-branca::after, .cinto.listra-preta::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 34%; transform: translateY(-50%); z-index: 1; box-shadow: 0 0 0 1px rgba(0,0,0,.18); }
+.cinto.listra-branca::after { background: linear-gradient(180deg, #ffffff, #d9d9d6); }
+.cinto.listra-preta::after { background: linear-gradient(180deg, #1c1c20, #060608); }
+.cinto-barra { z-index: 2; }
