@@ -189,6 +189,6 @@ def _limpa_cache(sender, **kwargs):
     cache.clear()
 
 
-for _m in (Aluno, Interessado, Doacao, Presenca, Graduacao, Turma):
+for _m in (Aluno, Interessado, Doacao, Presenca, Graduacao, Turma, Assinatura):
     post_save.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_s")
     post_delete.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_d")

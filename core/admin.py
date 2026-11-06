@@ -2,16 +2,19 @@ from datetime import date, timedelta
 from urllib.parse import quote
 
 import base64
+import hashlib
 import io
 
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 from django.core.cache import cache
+from django.core.paginator import Paginator
 from django import forms
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponse, JsonResponse
+from django.utils.functional import cached_property
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import format_html
@@ -25,12 +28,29 @@ COR_FAIXA = {
 }
 
 
+class PaginadorEmCache(Paginator):
+    """Paginador que guarda a contagem por alguns minutos (o cache é limpo quando algo muda)."""
+
+    @cached_property
+    def count(self):
+        try:
+            chave = "contagem_" + hashlib.md5(str(self.object_list.query).encode()).hexdigest()
+        except Exception:
+            return super().count
+        valor = cache.get(chave)
+        if valor is None:
+            valor = super().count
+            cache.set(chave, valor, 300)
+        return valor
+
+
 class PainelAdmin(admin.ModelAdmin):
     """Base do painel: sem menu 'Ação', com botões simples em cada linha."""
 
     actions = None
     date_hierarchy = None
     show_full_result_count = False
+    paginator = PaginadorEmCache
     ajuda = ""
 
     def changelist_view(self, request, extra_context=None):
@@ -310,14 +330,16 @@ class DoacaoAdmin(PainelAdmin):
         return brl(obj.valor)
 
     def changelist_view(self, request, extra_context=None):
-        hoje = date.today()
-        soma = lambda qs: qs.aggregate(t=Sum("valor"))["t"] or 0
+        def calcula():
+            hoje = date.today()
+            soma = lambda qs: qs.aggregate(t=Sum("valor"))["t"] or 0
+            return {
+                "mes": brl(soma(Doacao.objects.filter(data__year=hoje.year, data__month=hoje.month))),
+                "ano": brl(soma(Doacao.objects.filter(data__year=hoje.year))),
+                "qtd": Doacao.objects.filter(data__year=hoje.year).count(),
+            }
         extra_context = extra_context or {}
-        extra_context["resumo"] = {
-            "mes": brl(soma(Doacao.objects.filter(data__year=hoje.year, data__month=hoje.month))),
-            "ano": brl(soma(Doacao.objects.filter(data__year=hoje.year))),
-            "qtd": Doacao.objects.filter(data__year=hoje.year).count(),
-        }
+        extra_context["resumo"] = cache.get_or_set("resumo_doacoes", calcula, 300)
         return super().changelist_view(request, extra_context)
 
 
@@ -337,7 +359,8 @@ class AssinaturaAdmin(PainelAdmin):
     change_form_template = "admin/core/assinatura/change_form.html"
 
     def has_add_permission(self, request):
-        return not Assinatura.objects.exists()
+        # guardado em cache: o menu pergunta isso em toda página
+        return not cache.get_or_set("tem_assinatura_registro", Assinatura.objects.exists, 300)
 
     def save_model(self, request, obj, form, change):
         from PIL import Image

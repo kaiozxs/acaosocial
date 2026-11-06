@@ -6,6 +6,44 @@
 
   function cookie(n) { var m = document.cookie.match("(?:^|; )" + n + "=([^;]*)"); return m ? decodeURIComponent(m[1]) : ""; }
 
+
+  /* ---------- aviso de carregando: barra no topo e bolinha girando ---------- */
+  var barra, bolinha, timer;
+  function montaCarregando() {
+    if (barra) return;
+    barra = document.createElement("div"); barra.id = "carregando"; barra.innerHTML = "<i></i>";
+    bolinha = document.createElement("div"); bolinha.id = "girando"; bolinha.setAttribute("role", "status"); bolinha.setAttribute("aria-label", "Carregando");
+    document.body.appendChild(barra); document.body.appendChild(bolinha);
+  }
+  function comecaCarregar() {
+    montaCarregando();
+    raiz.classList.add("carregando");
+    clearTimeout(timer);
+    timer = setTimeout(function () { raiz.classList.add("carregando-lento"); }, 350);
+  }
+  function paraCarregar() {
+    raiz.classList.remove("carregando", "carregando-lento");
+    clearTimeout(timer);
+    document.querySelectorAll(".esperando").forEach(function (b) { b.classList.remove("esperando"); });
+  }
+  window.addEventListener("pageshow", paraCarregar);
+  document.addEventListener("click", function (e) {
+    if (e.defaultPrevented) return;
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0 || a.target === "_blank" || a.hasAttribute("download")) return;
+    var h = a.getAttribute("href") || "";
+    if (!h || h.charAt(0) === "#" || h.indexOf("javascript:") === 0 || h.indexOf("mailto:") === 0 || h.indexOf("tel:") === 0) return;
+    try { if (new URL(a.href, location.href).origin !== location.origin) return; } catch (err) { return; }
+    comecaCarregar();
+  });
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    if (f.target === "_blank" || e.defaultPrevented) return;
+    var b = f.querySelector('button[type="submit"], input[type="submit"]');
+    if (b) b.classList.add("esperando");
+    comecaCarregar();
+  });
+
   /* ---------- tema: só claro e escuro ---------- */
   function aplicaTema(t) {
     raiz.dataset.theme = t;
@@ -42,6 +80,7 @@
     dlg.addEventListener("click", function (e) { if (e.target === dlg) fecha(false); });
     dlg.addEventListener("cancel", function () { quadro.src = "about:blank"; });
     quadro.addEventListener("load", function () {
+      dlg.classList.remove("abrindo");
       try {
         var h1 = quadro.contentDocument.querySelector("#content h1, .titles h1");
         if (h1) tituloEl.textContent = h1.textContent.trim();
@@ -51,6 +90,7 @@
   function abre(url) {
     montaCaixinha();
     tituloEl.textContent = "";
+    dlg.classList.add("abrindo");
     quadro.src = url + (url.indexOf("?") > -1 ? "&" : "?") + "_modal=1";
     if (!dlg.open) dlg.showModal();
   }
