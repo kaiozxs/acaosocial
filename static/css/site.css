@@ -219,3 +219,14 @@ footer a:hover { color: #fff; }
 @media (max-width: 760px) { .costura { grid-template-columns: 1fr; justify-items: start; } .qr { justify-self: center; transform: none; } }
 
 .selo { display: block; width: clamp(150px, 22vw, 220px); height: auto; margin: 0 0 1.6rem; border-radius: 50%; box-shadow: 0 0 0 5px var(--vermelho), 0 0 0 9px #0b0b0b, 0 14px 30px rgba(0,0,0,.6); transform: rotate(-4deg); }
+
+/* toque no site público */
+.topo nav a:last-child { display: inline-flex; align-items: center; min-height: 40px; }
+footer a { display: inline-block; padding: 10px 2px; }
+.contato { min-height: 56px; }
+
+.ficha input, .ficha textarea { min-height: 44px; }
+.ficha textarea { min-height: 84px; }
+.topo-nome { display: inline-flex; align-items: center; min-height: 44px; }
+.topo nav a { display: inline-flex; align-items: center; min-height: 40px; padding-left: .35rem; padding-right: .35rem; }
+.topo nav a:last-child { padding-left: .8rem; padding-right: .8rem; }

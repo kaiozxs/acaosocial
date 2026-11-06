@@ -752,3 +752,88 @@ html[data-theme="light"] #toolbar #searchbar { border-color: #d3d9e5 !important;
   .filtro ul { position: absolute !important; left: 0 !important; right: 0 !important; top: calc(100% + 8px) !important; bottom: auto !important; max-height: 60vh; min-width: 0; width: auto; }
   .filtro li a { padding: 13px 14px; font-size: .95rem; }
 }
+
+/* =================== revisão geral de responsividade e toque =================== */
+
+/* texto nunca abaixo de 11,5px */
+.resumo span, .stats span, .stat-barras > span, .hero-sub, .modalidade, .barra span, .stat-barras .barra span, thead th, .help, .helptext, form .aligned p.help, form .aligned div.help, .errorlist li, .freq small, .aluno-meta, .faixa-chip em, .pilula, .historylink, ul.messagelist li small, .vDateField + .datetimeshortcuts, .linha small { font-size: max(.76rem, 11.5px) !important; }
+.help, .helptext { line-height: 1.45; }
+.barra span { font-size: .72rem !important; }
+
+/* áreas de toque de pelo menos 40px */
+#user-tools .topo-link, #user-tools button, #user-tools form button, .hero-link, .btn, .btn-novo, .btn-principal, .dia-seta, details.pontos summary, .tema-btn, .caixinha-x, .historylink, .voltar, .limpar-filtros, #toolbar span.small a, #toolbar .quiet a { min-height: 40px; }
+.topo-marca { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; }
+.hero-link { display: inline-flex; align-items: center; }
+.voltar { display: inline-flex; align-items: center; padding: 6px 4px; margin-bottom: 8px; }
+.historylink { display: inline-flex; align-items: center; padding: 0 14px; border-radius: 99px; background: var(--card-2); border: 1px solid var(--line); color: var(--ink) !important; font-weight: 600; text-transform: none; letter-spacing: 0; }
+#toolbar span.small a, #toolbar .quiet a { display: inline-flex; align-items: center; padding: 0 4px; }
+#result_list th a, #result_list td a:not(.btn) { display: inline-block; padding: 10px 0; }
+.related-widget-wrapper-link { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; }
+a.related-widget-wrapper-link img { width: 18px; height: 18px; }
+
+/* campos de formulário confortáveis */
+input[type=text], input[type=password], input[type=number], input[type=date], input[type=email], input[type=tel], input[type=url], input[type=search], select, textarea { min-height: 44px; box-sizing: border-box; }
+textarea { min-height: 96px; }
+
+/* tabela da lista não pode passar da tela: texto quebra de linha */
+#result_list td, #result_list th { white-space: normal; overflow-wrap: anywhere; }
+#result_list td .faixa-chip, #result_list td .pilula, #result_list td .acoes-linha, #result_list td details.pontos { white-space: nowrap; overflow-wrap: normal; }
+#result_list td.field-turma { max-width: 260px; }
+#result_list { table-layout: auto; width: 100%; }
+#changelist .results { max-width: 100%; }
+
+/* campo de aluno com busca (select2) cabe na tela e combina com o tema */
+select.admin-autocomplete:not(.select2-hidden-accessible) { width: 100% !important; max-width: 100% !important; }
+.select2-container { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+.select2-container--admin-autocomplete .select2-selection--single, .select2-container--admin-autocomplete .select2-selection--multiple { min-height: 44px; background: var(--bg) !important; border: 1px solid #2b3546 !important; border-radius: 10px !important; display: flex; align-items: center; }
+html[data-theme="light"] .select2-container--admin-autocomplete .select2-selection--single { border-color: #d3d9e5 !important; }
+.select2-container--admin-autocomplete .select2-selection--single .select2-selection__rendered { color: var(--ink) !important; line-height: 1.3; padding: 0 12px; width: 100%; }
+.select2-container--admin-autocomplete .select2-selection--single .select2-selection__arrow { height: 42px; }
+.select2-dropdown { background: var(--card) !important; border: 1px solid var(--line) !important; border-radius: 12px !important; color: var(--ink); overflow: hidden; z-index: 200; }
+.select2-search--dropdown .select2-search__field { background: var(--bg) !important; color: var(--ink); border: 1px solid var(--line) !important; border-radius: 8px; min-height: 40px; }
+.select2-container--admin-autocomplete .select2-results__option { padding: 11px 12px; color: var(--ink); }
+.select2-container--admin-autocomplete .select2-results__option--highlighted[aria-selected], .select2-container--admin-autocomplete .select2-results__option--highlighted.select2-results__option--selectable { background: var(--accent) !important; color: #fff !important; }
+.related-widget-wrapper { display: flex; align-items: center; gap: 8px; max-width: 100%; }
+.related-widget-wrapper > select, .related-widget-wrapper > .select2 { flex: 1 1 auto; min-width: 0; }
+
+@media (max-width: 980px) {
+  /* nada de margem sobrando: formulário usa a largura toda */
+  #content, #content.colM, #content.colMS, .colM, .colMS { padding: 0 !important; margin: 0 !important; width: auto !important; }
+  .main > .content { padding: 14px 12px 120px !important; }
+  input, select, textarea { font-size: 16px !important; }  /* evita o zoom automático do iPhone */
+  #result_list td.field-turma { max-width: none; }
+  .btn, details.pontos summary { min-height: 42px; }
+  details.pontos summary { width: 42px; }
+  .hero-link { width: 100%; justify-content: center; }
+  #user-tools { gap: 8px; }
+}
+@media (max-width: 380px) {
+  .main > .content { padding: 12px 10px 120px !important; }
+  fieldset.module .form-row { padding: 12px !important; }
+  .titulo-linha h1 { font-size: 1.25rem; }
+  .stats { grid-template-columns: 1fr 1fr; }
+}
+
+/* segunda rodada da revisão */
+.barra span, .stat-barras .barra span { font-size: 11.5px !important; }
+.filtro summary { min-height: 42px; }
+#result_list th a, #result_list td a:not(.btn) { padding: 13px 0; }
+.ver-todos { display: inline-flex; align-items: center; min-height: 42px; padding: 0 4px; }
+@media (max-width: 980px) { .hero-link { width: auto !important; align-self: flex-start; } .cartao-hero { overflow: visible; } }
+@media (max-width: 980px) { .acoes-redondas a { font-size: .78rem; padding: 12px 2px; line-height: 1.2; } }
+
+/* altura dos campos: sempre confortável para o dedo */
+input[type=text], input[type=password], input[type=number], input[type=date], input[type=email], input[type=tel], input[type=url], input[type=search], select:not(.select2-hidden-accessible) { min-height: 44px !important; }
+textarea { min-height: 96px !important; }
+ul li .helptext, .help li, ul.help li, .form-row .help li { font-size: 12px; }
+form .aligned ul li, .form-row ul li { font-size: max(.8rem, 12px); }
+
+.form-row select.select2-hidden-accessible, select.select2-hidden-accessible { width: 1px !important; height: 1px !important; min-height: 0 !important; max-width: 1px !important; padding: 0 !important; border: 0 !important; position: absolute !important; clip: rect(0 0 0 0) !important; overflow: hidden !important; }
+
+/* cabeçalho do celular: uma linha só, fundo sólido (nada aparece por trás ao rolar) */
+@media (max-width: 980px) {
+  #header { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; justify-content: space-between !important; height: 58px !important; padding: 0 12px !important; position: sticky; top: 0; z-index: 70; background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; }
+  #branding { display: block; flex: 0 0 auto; width: auto; }
+  #user-tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .filtros-barra { scroll-margin-top: 70px; }
+}
