@@ -599,3 +599,12 @@ fieldset.module .form-row { overflow: hidden; }
 .form-row .flex-container, .aligned .form-row > div, .form-row > div { width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; }
 fieldset.module .form-row { padding: 14px 20px !important; }
 fieldset.module .form-row .checkbox-row { display: flex; gap: 10px; align-items: center; }
+
+/* o menu de três pontinhos não pode ser cortado pelo cartão da lista */
+#changelist, #changelist .changelist-form-container, #changelist .results, #changelist-form { overflow: visible !important; }
+#result_list thead th:first-child { border-top-left-radius: 16px; }
+#result_list thead th:last-child { border-top-right-radius: 16px; }
+#result_list tbody tr:last-child td:first-child, #result_list tbody tr:last-child th:first-child { border-bottom-left-radius: 16px; }
+#result_list tbody tr:last-child td:last-child { border-bottom-right-radius: 16px; }
+details.pontos[open] { z-index: 60; }
+#result_list tr:has(details.pontos[open]) { z-index: 60; position: relative; }
