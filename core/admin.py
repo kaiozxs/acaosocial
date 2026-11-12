@@ -21,7 +21,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Faixa, faixa_base, faixa_listra, Aluno, Assinatura, Doacao, Graduacao, Interessado, Presenca, Turma
+from .models import eh_mestre, Faixa, faixa_base, faixa_listra, Aluno, Assinatura, Doacao, Graduacao, Interessado, Presenca, Turma
 
 COR_FAIXA = {
     "branca": "#f2f2f2", "cinza": "#9a9a9a", "amarela": "#f4c20d", "laranja": "#f08a24",
@@ -491,7 +491,7 @@ admin.site.unregister(User)
 @admin.register(User)
 class UsuarioAdmin(PainelAdmin, UserAdmin):
     texto_novo = "Adicionar usuário"
-    list_display = ("username", "first_name", "ativo", "menu")
+    list_display = ("username", "first_name", "papel", "ativo", "menu")
     list_filter = ()
     search_fields = ("username", "first_name", "email")
     ajuda = ("Pessoas que podem entrar no painel. Para trocar a sua própria senha vá em Configurações. "
@@ -509,9 +509,28 @@ class UsuarioAdmin(PainelAdmin, UserAdmin):
     @admin.display(description="")
     def menu(self, obj):
         itens = [self.item_link(obj, "change", "Editar")]
-        if not obj.is_superuser:
+        if not eh_mestre(obj):
             itens.append(self.item_link(obj, "delete", "Excluir", True))
         return self.menu_pontos(*itens)
+
+    @admin.display(description="Papel")
+    def papel(self, obj):
+        if eh_mestre(obj):
+            return mark_safe('<span class="pilula ok">Administrador mestre</span>')
+        return mark_safe('<span class="pilula novo">Acesso total</span>') if obj.is_superuser else "Equipe"
+
+    def has_delete_permission(self, request, obj=None):
+        if obj is not None and eh_mestre(obj):
+            return False  # o mestre nunca é apagado
+        return super().has_delete_permission(request, obj)
+
+    def get_readonly_fields(self, request, obj=None):
+        campos = list(super().get_readonly_fields(request, obj))
+        if not eh_mestre(request.user):
+            campos.append("is_superuser")  # só o mestre dá "acesso total"
+        if obj is not None and eh_mestre(obj) and not eh_mestre(request.user):
+            campos += ["username", "is_active", "is_staff", "first_name", "last_name", "email"]  # ninguém mexe no mestre
+        return campos
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)

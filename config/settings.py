@@ -111,3 +111,6 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = "same-origin"
+
+# Usuário mestre: manda em tudo e não pode ser apagado nem rebaixado por outras pessoas.
+USUARIO_MESTRE = os.getenv("USUARIO_MESTRE", "Melino")

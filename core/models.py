@@ -238,3 +238,23 @@ def _limpa_cache(sender, **kwargs):
 for _m in (Aluno, Interessado, Doacao, Presenca, Graduacao, Turma, Assinatura):
     post_save.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_s")
     post_delete.connect(_limpa_cache, sender=_m, dispatch_uid=f"limpa_{_m.__name__}_d")
+
+
+# ---- usuário mestre: não pode ser apagado ----
+from django.conf import settings as _settings  # noqa: E402
+from django.contrib.auth import get_user_model as _get_user_model  # noqa: E402
+from django.db.models import ProtectedError  # noqa: E402
+from django.db.models.signals import pre_delete  # noqa: E402
+
+
+def eh_mestre(usuario):
+    """True se for o usuário mestre (o nome vem de settings.USUARIO_MESTRE)."""
+    return bool(usuario) and getattr(usuario, "username", "").lower() == _settings.USUARIO_MESTRE.lower()
+
+
+def _protege_mestre(sender, instance, **kwargs):
+    if eh_mestre(instance):
+        raise ProtectedError("O usuário mestre não pode ser apagado.", [instance])
+
+
+pre_delete.connect(_protege_mestre, sender=_get_user_model(), dispatch_uid="protege_mestre")

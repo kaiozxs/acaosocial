@@ -74,6 +74,9 @@ Para quem não está cadastrado, use **Outra pessoa**.
 1. **Doações** → **Registrar doação**: valor, data e forma (Pix, dinheiro ou outra). O doador pode ficar em branco (anônimo).
 2. No topo da lista aparecem os totais do mês e do ano.
 
+## Administrador mestre
+O usuário **Melino** é o administrador mestre: manda em tudo, **não pode ser apagado** nem ter o acesso tirado por outra pessoa, e é o único que pode dar **acesso total** a alguém. O usuário não diferencia maiúscula de minúscula (`Melino` e `melino` entram do mesmo jeito).
+
 ## Dar acesso a outra pessoa
 **Configurações → Quem acessa o painel → Adicionar usuário**. Marque *Pode usar o painel*. Para tirar o acesso, desmarque *Conta ativa*.
 

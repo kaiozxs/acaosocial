@@ -7,7 +7,9 @@
 2. Crie as tabelas: `python manage.py migrate`
 3. **Proteja as tabelas:** `python manage.py protege_banco`
    As tabelas criadas pelo Django nascem abertas para a API pública do Supabase. Esse comando liga o RLS em todas. Rode de novo sempre que criar tabelas novas.
-4. Crie o usuário do professor: `python manage.py createsuperuser`
+4. Crie o usuário mestre (acesso total, não pode ser apagado): `python manage.py mestre --senha SUA_SENHA`
+   Para resetar todos os logins e recomeçar só com o mestre: `python manage.py mestre --senha SUA_SENHA --apagar-outros`
+   O nome do mestre é `Melino` (variável `USUARIO_MESTRE`).
 
 ## 2. Site (Vercel)
 1. Em vercel.com, **Add New → Project** e importe o repositório do GitHub.
