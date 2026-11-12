@@ -2,7 +2,7 @@
 
 Passo a passo para usar o painel. Tudo funciona no **celular** e no computador.
 
-**Endereço do painel:** https://acaosocial-five.vercel.app/admin
+**Endereço do painel:** https://ctsalvacao.vercel.app/admin
 
 ## Entrar e sair
 1. Abra o endereço do painel e digite o **usuário** e a **senha**.
