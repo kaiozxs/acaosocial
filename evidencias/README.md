@@ -22,6 +22,7 @@ Prints do sistema funcionando, tirados com dados de demonstração (alunos, turm
 | `21-painel-menu-tres-pontinhos.jpg` | Menu de três pontinhos em cada item |
 | `22-painel-excluir.jpg` | Confirmação antes de excluir |
 | `24-painel-inicio-tema-claro.jpg` | Tema claro |
+| `25-painel-login.jpg` | Tela de entrada do painel |
 
 ## Painel no celular
 `30-celular-inicio.jpg`, `31-celular-alunos.jpg`, `32-celular-interessados.jpg`, `33-celular-chamada-lista.jpg`, `34-celular-certificados.jpg`, `35-celular-doacoes.jpg`, `36-celular-formulario-aluno.jpg`.

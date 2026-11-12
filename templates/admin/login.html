@@ -1,0 +1,30 @@
+{% extends "admin/login.html" %}
+{% load static %}
+{% block content_title %}{% endblock %}
+{% block content %}
+<div class="entrar">
+  <div class="entrar-logo"><img src="{% static 'img/logo.png' %}" alt="CT Salvação" width="104" height="104"></div>
+  <h1>Painel do professor</h1>
+  <p class="entrar-sub">CT Salvação · Projeto Salvação</p>
+  {% if form.errors %}<p class="entrar-erro" role="alert">Usuário ou senha incorretos. Confira e tente de novo.</p>{% endif %}
+  {% if user.is_authenticated %}<p class="entrar-erro" role="alert">Você entrou como {{ user.get_username }}, mas essa conta não pode usar o painel. Entre com outra.</p>{% endif %}
+  <form action="{{ app_path }}" method="post" id="login-form" class="entrar-form">{% csrf_token %}
+    <label for="id_username">Usuário</label>
+    <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" placeholder="Seu usuário" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required>
+    <label for="id_password">Senha</label>
+    <div class="senha-campo">
+      <input type="password" name="password" id="id_password" placeholder="Sua senha" autocomplete="current-password" required>
+      <button type="button" class="ver-senha" aria-label="Mostrar ou esconder a senha"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn-principal entrar-botao">Entrar</button>
+  </form>
+  <a class="entrar-voltar" href="/">Voltar ao site</a>
+</div>
+<script>
+document.querySelector('.ver-senha').addEventListener('click', function () {
+  var c = document.getElementById('id_password');
+  c.type = c.type === 'password' ? 'text' : 'password';
+});
+</script>
+{% endblock %}

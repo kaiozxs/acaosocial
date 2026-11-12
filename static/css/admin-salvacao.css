@@ -874,3 +874,31 @@ html.em-modal .excluir-cartao { margin: 8px auto; box-shadow: none; border: 0; b
 .cinto.listra-branca::after { background: linear-gradient(180deg, #ffffff, #d9d9d6); }
 .cinto.listra-preta::after { background: linear-gradient(180deg, #1c1c20, #060608); }
 .cinto-barra { z-index: 2; }
+
+/* ---------- tela de entrada (login) ---------- */
+body.login { background: radial-gradient(900px 520px at 50% -8%, rgba(225,29,63,.22), transparent 62%), radial-gradient(700px 420px at 100% 100%, rgba(91,140,255,.08), transparent 60%), var(--bg) !important; display: grid; place-items: center; min-height: 100vh; padding: 24px 16px; }
+.login #header, .login .breadcrumbs, .login #footer { display: none !important; }
+.login #container { width: min(420px, 100%) !important; min-height: 0 !important; margin: 0; padding: 0 !important; border: 1px solid var(--line) !important; border-radius: 26px !important; background: linear-gradient(180deg, var(--card-2), var(--card)) !important; box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.03) inset !important; overflow: visible; }
+.login #content { padding: 0 !important; margin: 0 !important; background: transparent; }
+.login .main > .content { padding: 0 !important; }
+.entrar { padding: 40px 36px 30px; text-align: center; }
+.entrar-logo { width: 104px; height: 104px; margin: -92px auto 18px; border-radius: 50%; background: var(--card); box-shadow: 0 0 0 6px var(--card), 0 0 0 7px var(--line), 0 18px 40px rgba(225,29,63,.35); }
+.entrar-logo img { display: block; width: 104px; height: 104px; border-radius: 50%; }
+.entrar h1 { font-size: 1.55rem !important; margin: 0 0 4px !important; text-transform: none; }
+.entrar-sub { margin: 0 0 22px; color: var(--muted); font-size: .92rem; }
+.entrar-erro { margin: 0 0 16px; padding: 11px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-hi); font-weight: 600; font-size: .9rem; }
+.entrar-form { text-align: left; display: grid; gap: 6px; }
+.entrar-form label { color: var(--muted); font-weight: 600; font-size: .82rem; margin-top: 8px; }
+.entrar-form input[type=text], .entrar-form input[type=password] { width: 100% !important; max-width: none !important; min-height: 50px !important; padding: 0 16px !important; border-radius: 14px !important; font-size: 16px !important; box-sizing: border-box; }
+.senha-campo { position: relative; }
+.senha-campo input { padding-right: 52px !important; }
+.ver-senha { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 10px; background: none; cursor: pointer; display: grid; place-items: center; }
+.ver-senha svg { width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ver-senha:hover svg { stroke: var(--ink); }
+.entrar-botao { width: 100%; margin-top: 18px; min-height: 52px; font-size: 1rem; }
+.entrar-voltar { display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; color: var(--muted) !important; font-weight: 600; font-size: .9rem; }
+.entrar-voltar:hover { color: var(--ink) !important; }
+@media (max-width: 480px) { .entrar { padding: 36px 22px 24px; } }
+
+.entrar { padding-top: 38px; }
+.entrar-logo { margin: 0 auto 18px; box-shadow: 0 0 0 5px rgba(225,29,63,.18), 0 16px 36px rgba(225,29,63,.28); }
