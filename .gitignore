@@ -12,3 +12,5 @@ package.json
 package-lock.json
 
 db.demo.sqlite3
+
+vercel-variaveis.txt
