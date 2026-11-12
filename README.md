@@ -5,7 +5,7 @@ Site público e painel de gestão para o **CT Salvação / Projeto Salvação**:
 O sistema troca o caderno e as anotações soltas por um painel simples de usar **no celular**: cadastro de alunos, chamada, doações, certificados e contato com quem quer treinar.
 
 - **Repositório:** https://github.com/kaiozxs/acaosocial
-- **Site publicado:** _(inserir o endereço da Vercel depois do deploy)_
+- **Site publicado:** https://acaosocial-five.vercel.app (painel em https://acaosocial-five.vercel.app/admin)
 
 ## O que o sistema faz
 

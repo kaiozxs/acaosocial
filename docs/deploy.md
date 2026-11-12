@@ -11,7 +11,7 @@
 
 ## 2. Site (Vercel)
 1. Em vercel.com, **Add New → Project** e importe o repositório do GitHub.
-2. Framework: *Other*. O arquivo `vercel.json` já aponta tudo para `api/index.py` e fixa a região `sfo1` (perto do banco).
+2. Deixe o framework que a Vercel detectar (Django). O `vercel.json` só fixa a região `sfo1` (perto do banco). **Não** coloque redirecionamentos (`rewrites`) para `/api/index`: o Django já recebe o caminho original, e com o redirecionamento todas as páginas dão 404.
 3. Em **Settings → Environment Variables**, defina:
 
 | Variável | Valor | Observação |
