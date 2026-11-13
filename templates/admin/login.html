@@ -6,7 +6,7 @@
   <div class="entrar-logo"><img src="{% static 'img/logo.png' %}" alt="CT Salvação" width="104" height="104"></div>
   <h1>Painel do professor</h1>
   <p class="entrar-sub">CT Salvação · Projeto Salvação</p>
-  {% if form.errors %}<p class="entrar-erro" role="alert">Usuário ou senha incorretos. Confira e tente de novo.</p>{% endif %}
+  {% if form.errors %}<p class="entrar-erro" role="alert">Usuário ou senha incorretos. Confira e tente de novo. Depois de 5 erros seguidos o acesso fica bloqueado por 15 minutos.</p>{% endif %}
   {% if user.is_authenticated %}<p class="entrar-erro" role="alert">Você entrou como {{ user.get_username }}, mas essa conta não pode usar o painel. Entre com outra.</p>{% endif %}
   <form action="{{ app_path }}" method="post" id="login-form" class="entrar-form">{% csrf_token %}
     <label for="id_username">Usuário</label>

@@ -63,7 +63,16 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+# Senhas guardadas com Argon2 (vencedor do concurso de hash de senhas); as antigas (PBKDF2) são
+# convertidas sozinhas no próximo login de cada pessoa.
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
 ]
 
 LANGUAGE_CODE = "pt-br"
@@ -98,7 +107,9 @@ INSTAGRAM_USUARIO = os.getenv("INSTAGRAM_USUARIO", "@projetosalvacaosg")
 
 # Velocidade: sessão no cookie assinado (sem consulta ao banco) e usuário em cache curto.
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 3
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
 AUTHENTICATION_BACKENDS = ["core.auth.UsuarioEmCache"]
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "painel"}}
 
@@ -111,6 +122,7 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = "same-origin"
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 365  # o navegador só aceita falar com o site por HTTPS
 
 # Usuário mestre: manda em tudo e não pode ser apagado nem rebaixado por outras pessoas.
 USUARIO_MESTRE = os.getenv("USUARIO_MESTRE", "Melino")

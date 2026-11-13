@@ -258,3 +258,16 @@ def _protege_mestre(sender, instance, **kwargs):
 
 
 pre_delete.connect(_protege_mestre, sender=_get_user_model(), dispatch_uid="protege_mestre")
+
+
+class TentativaLogin(models.Model):
+    """Conta erros de senha por usuário+IP e por IP, para bloquear tentativas em sequência (força bruta).
+    Fica no banco (e não na memória) porque na Vercel cada acesso pode cair em uma instância diferente."""
+    chave = models.CharField(max_length=200, unique=True)
+    falhas = models.PositiveSmallIntegerField(default=0)
+    bloqueado_ate = models.DateTimeField(null=True, blank=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "tentativa de login"
+        verbose_name_plural = "tentativas de login"
